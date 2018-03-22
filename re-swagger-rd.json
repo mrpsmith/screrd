@@ -8,7 +8,7 @@
 			"email": "integration@ship.cars"
 		}
 	},
-	"host": "ratesai.ship.cars",
+	"host": "rateengine.ship.cars",
 	"basePath": "/v1",
 	"tags": [
 		{
