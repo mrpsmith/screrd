@@ -388,34 +388,36 @@
 		"quoteResponse": {
 			"description": "Success",
 			"examples": {
-				"pickup": {
-					"zip": "60607",
-					"city": "Chicago",
-					"state": "IL",
-					"lon": -87.6578,
-					"lat": 41.8721
-				},
-				"delivery": {
-					"zip": "33607",
-					"city": "Tampa",
-					"state": "FL",
-					"lon": -82.4895,
-					"lat": 27.9625
-				},
-				"vehicles": [
-					{
-						"year": 2017,
-						"make": "Ford",
-						"model": "F-250 Super Duty",
-						"type": null,
-						"running": true,
-						"trim": null
-					}
-				],
-				"estimated_shipping_date": "2018-12-24T092:00:00-05:00",
-				"enclosed": false,
-				"reference_id": "R2anvRJBBkPg73SYanjAhrYIo",
-				"pr_cpay": 1658.44
+				"application/json": {
+					"pickup": {
+						"zip": "60607",
+						"city": "Chicago",
+						"state": "IL",
+						"lon": -87.6578,
+						"lat": 41.8721
+					},
+					"delivery": {
+						"zip": "33607",
+						"city": "Tampa",
+						"state": "FL",
+						"lon": -82.4895,
+						"lat": 27.9625
+					},
+					"vehicles": [
+						{
+							"year": 2017,
+							"make": "Ford",
+							"model": "F-250 Super Duty",
+							"type": null,
+							"running": true,
+							"trim": null
+						}
+					],
+					"estimated_shipping_date": "2018-12-24T092:00:00-05:00",
+					"enclosed": false,
+					"reference_id": "R2anvRJBBkPg73SYanjAhrYIo",
+					"pr_cpay": 1658.44
+				}
 			},
 			"schema": {
 				"$ref": "#/definitions/quote"
