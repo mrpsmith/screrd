@@ -1,0 +1,639 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"description": "This is description of the Ship.Cars Rates Engine API FIXME.",
+		"version": "1.0.0",
+		"title": "Ship.Cars Rate Engine API",
+		"contact": {
+			"email": "integration@ship.cars"
+		}
+	},
+	"host": "ratesai.ship.cars",
+	"basePath": "/v1",
+	"tags": [
+		{
+			"name": "Quotes",
+			"description": "Manage predicted quotes"
+		},
+		{
+			"name": "Vehicles",
+			"description": "Retrieve vehicle data"
+		}
+	],
+	"schemes": [
+		"http"
+	],
+	"consumes": [
+		"application/json"
+	],
+	"produces": [
+		"application/json"
+	],
+	"securityDefinitions": {
+		"APIKeyQueryParam": {
+			"type": "apiKey",
+			"in": "query",
+			"name": "token"
+		}
+	},
+	"security": [
+		{
+			"APIKeyQueryParam": []
+		}
+	],
+	"paths": {
+		"/predictquote/sync": {
+			"post": {
+				"tags": [
+					"Quotes"
+				],
+				"summary": "Create a new quote",
+				"description": "Creates a new quote object and returns the predicted quote details using synchronous mode.",
+				"operationId": "predictquote_create",
+				"parameters": [
+					{
+						"$ref": "#/parameters/contentHeader"
+					},
+					{
+						"$ref": "#/parameters/quoteParam"
+					}
+				],
+				"responses": {
+					"201": {
+						"$ref": "#/responses/quoteResponse"
+					},
+					"406": {
+						"$ref": "#/responses/NotAcceptableError"
+					}
+				}
+			}
+		},
+		"/predictquote/sync/{refId}": {
+			"get": {
+				"tags": [
+					"Quotes"
+				],
+				"summary": "Return an identified quote",
+				"description": "Returns the predicted quote details for an identified quote.",
+				"operationId": "predictquote_return",
+				"parameters": [
+					{
+						"$ref": "#/parameters/refIdParam"
+					}
+				],
+				"responses": {
+					"202": {
+						"$ref": "#/responses/quoteResponse"
+					},
+					"404": {
+						"$ref": "#/responses/NotFoundError"
+					},
+					"406": {
+						"$ref": "#/responses/NotAcceptableError"
+					}
+				}
+			}
+		},
+		"/vehicles/years": {
+			"get": {
+				"tags": [
+					"Vehicles"
+				],
+				"summary": "Return manufacture years",
+				"description": "Returns the vehicle manufacture years in the database.",
+				"operationId": "vehicles_years",
+				"responses": {
+					"200": {
+						"$ref": "#/responses/yearsResponse"
+					},
+					"406": {
+						"$ref": "#/responses/NotAcceptableError"
+					}
+				}
+			}
+		},
+		"/vehicles/makes": {
+			"get": {
+				"tags": [
+					"Vehicles"
+				],
+				"summary": "Return vehicle makes",
+				"description": "Returns the vehicle makes in the database.",
+				"operationId": "vehicles_makes",
+				"parameters": [
+					{
+						"$ref": "#/parameters/yearParam"
+					}
+				],
+				"responses": {
+					"200": {
+						"$ref": "#/responses/makesResponse"
+					},
+					"406": {
+						"$ref": "#/responses/NotAcceptableError"
+					}
+				}
+			}
+		},
+		"/vehicles/models": {
+			"get": {
+				"tags": [
+					"Vehicles"
+				],
+				"summary": "Return vehicle models",
+				"description": "Returns the vehicle models in the database.",
+				"operationId": "vehicles_models",
+				"parameters": [
+					{
+						"$ref": "#/parameters/yearParam"
+					},
+					{
+						"$ref": "#/parameters/makeParam"
+					}
+				],
+				"responses": {
+					"200": {
+						"$ref": "#/responses/modelsResponse"
+					},
+					"406": {
+						"$ref": "#/responses/NotAcceptableError"
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"quote": {
+			"type": "object",
+			"required": [
+				"pickup",
+				"delivery",
+				"vehicles",
+				"estimated_shipping_date"
+			],
+			"example": {
+				"pickup": {
+					"zip": "60607",
+					"city": "Chicago",
+					"state": "IL"
+				},
+				"delivery": {
+					"zip": "33607",
+					"city": "Tampa",
+					"state": "FL"
+				},
+				"vehicles": [
+					{
+						"year": 2017,
+						"make": "Ford",
+						"model": "F-250 Super Duty",
+						"running": true
+					}
+				],
+				"estimated_shipping_date": "2018-12-24",
+				"enclosed": false
+			},
+			"properties": {
+				"pickup": {
+					"type": "object",
+					"required": [
+						"zip"
+					],
+					"properties": {
+						"zip": {
+							"type": "string",
+							"description": "Zip code of the vehicle pickup location."
+						},
+						"city": {
+							"type": "string",
+							"description": "City of the vehicle pickup location."
+						},
+						"state": {
+							"type": "string",
+							"description": "Two-letter abbreviation of the state of the vehicle pickup location."
+						},
+						"lon": {
+							"type": "number",
+							"format": "float",
+							"readOnly": true,
+							"description": "Longiture of the vehicle pickup location coordinates."
+						},
+						"lat": {
+							"type": "number",
+							"format": "float",
+							"readOnly": true,
+							"description": "Latitude of the vehicle puckup location coordinates."
+						}
+					}
+				},
+				"delivery": {
+					"type": "object",
+					"required": [
+						"zip"
+					],
+					"properties": {
+						"zip": {
+							"type": "string",
+							"description": "Zip code of the vehicle delivery location."
+						},
+						"city": {
+							"type": "string",
+							"description": "City of the vehicle delivery location."
+						},
+						"state": {
+							"type": "string",
+							"description": "Two-letter abbreviation of the state of the vehicle delivery location."
+						},
+						"lon": {
+							"type": "number",
+							"format": "float",
+							"readOnly": true,
+							"description": "Longiture of the vehicle delivery location coordinates."
+						},
+						"lat": {
+							"type": "number",
+							"format": "float",
+							"readOnly": true,
+							"description": "Latitude of the vehicle delivery location coordinates."
+						}
+					}
+				},
+				"vehicles": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"required": [
+							"year",
+							"make",
+							"model",
+							"running"
+						],
+						"properties": {
+							"year": {
+								"type": "integer",
+								"description": "Vehicle manufacture year."
+							},
+							"make": {
+								"type": "string",
+								"description": "Vehicle make."
+							},
+							"model": {
+								"type": "string",
+								"description": "Vehicle model."
+							},
+							"running": {
+								"type": "boolean",
+								"description": "Indication of vehicle operability.",
+								"default": true
+							},
+							"type": {
+								"type": "string",
+								"description": "Vehicle type."
+							},
+							"trim": {
+								"type": "string",
+								"description": "Vehicle model trim level."
+							}
+						}
+					}
+				},
+				"estimated_shipping_date": {
+					"type": "string",
+					"format": "date-time",
+					"description": "Estimated shipping date in ISO-8601 format."
+				},
+				"enclosed": {
+					"type": "boolean",
+					"description": "Trailer type requirement, enclosed or open.",
+					"default": false
+				},
+				"reference_id": {
+					"type": "string",
+					"readOnly": true,
+					"description": "Unique reference ID of the quote."
+				},
+				"pr_cpay": {
+					"type": "number",
+					"format": "float",
+					"readOnly": true,
+					"description": "Predicted carrier payment amount."
+				}
+			}
+		},
+		"year": {
+			"type": "object",
+			"properties": {
+				"year": {
+					"type": "integer",
+					"description": "Vehicle manufacture year."
+				}
+			}
+		},
+		"make": {
+			"type": "object",
+			"properties": {
+				"make": {
+					"type": "string",
+					"description": "Vehicle make."
+				}
+			}
+		},
+		"model": {
+			"type": "object",
+			"properties": {
+				"vehicle_id": {
+					"type": "integer",
+					"description": "Unique identifier of the vehicle record for a specific combination of year, make, and model (including sub-model details)."
+				},
+				"type": {
+					"type": "string",
+					"description": "Vehicle type label with additional information about the body type.",
+					"enum": [
+						"cargo van large",
+						"cargo van small",
+						"mini-van",
+						"passenger van (8-12 people)",
+						"passenger van (over 12 people)",
+						"pickup crew cab",
+						"pickup dually",
+						"pickup ext cab",
+						"pickup small",
+						"sedan compact",
+						"sedan large",
+						"sedan midsize",
+						"sedan small",
+						"suv midsize"
+					]
+				},
+				"year": {
+					"type": "integer",
+					"description": "Vehicle manufacture year."
+				},
+				"make": {
+					"type": "string",
+					"description": "Vehicle make."
+				},
+				"model": {
+					"type": "string",
+					"description": "Vehicle model label with additional information about the sub-model and trim level."
+				},
+				"original_model": {
+					"type": "string",
+					"description": "Vehicle model."
+				}
+			}
+		}
+	},
+	"responses": {
+		"quoteResponse": {
+			"description": "Success",
+			"examples": {
+				"pickup": {
+					"zip": "60607",
+					"city": "Chicago",
+					"state": "IL",
+					"lon": -87.6578,
+					"lat": 41.8721
+				},
+				"delivery": {
+					"zip": "33607",
+					"city": "Tampa",
+					"state": "FL",
+					"lon": -82.4895,
+					"lat": 27.9625
+				},
+				"vehicles": [
+					{
+						"year": 2017,
+						"make": "Ford",
+						"model": "F-250 Super Duty",
+						"type": null,
+						"running": true,
+						"trim": null
+					}
+				],
+				"estimated_shipping_date": "2018-12-24T092:00:00-05:00",
+				"enclosed": false,
+				"reference_id": "R2anvRJBBkPg73SYanjAhrYIo",
+				"pr_cpay": 1658.44
+			},
+			"schema": {
+				"$ref": "#/definitions/quote"
+			}
+		},
+		"yearsResponse": {
+			"description": "Success",
+			"schema": {
+				"type": "array",
+				"description": "List of vehicle manufacture years.",
+				"uniqueItems": true,
+				"example": [
+					{
+						"year": 2018
+					},
+					{
+						"year": 2017
+					},
+					{
+						"year": 2016
+					},
+					{
+						"year": 2015
+					},
+					{
+						"year": 2014
+					}
+				],
+				"items": [
+					{
+						"$ref": "#/definitions/year"
+					}
+				]
+			}
+		},
+		"makesResponse": {
+			"description": "Success",
+			"schema": {
+				"type": "array",
+				"description": "List of vehicle makes.",
+				"uniqueItems": true,
+				"example": [
+					{
+						"make": "Cadillac"
+					},
+					{
+						"make": "Dodge"
+					},
+					{
+						"make": "Ford"
+					},
+					{
+						"make": "GMC"
+					},
+					{
+						"make": "Ram"
+					}
+				],
+				"items": [
+					{
+						"$ref": "#/definitions/make"
+					}
+				]
+			}
+		},
+		"modelsResponse": {
+			"description": "Success",
+			"schema": {
+				"type": "array",
+				"description": "List of vehicle models.",
+				"uniqueItems": true,
+				"example": [
+					{
+						"vehicle_id": "400894919",
+						"type": "pickup crew cab",
+						"year": 2017,
+						"make": "Ford",
+						"model": "F-250 Super Duty Crew Cab Long Bed",
+						"original_model": "F-250 Super Duty"
+					},
+					{
+						"vehicle_id": "400894939",
+						"type": "pickup crew cab",
+						"year": 2017,
+						"make": "Ford",
+						"model": "F-250 Super Duty Crew Cab Short Bed",
+						"original_model": "F-250 Super Duty"
+					},
+					{
+						"vehicle_id": "400894914",
+						"type": "pickup ext cab",
+						"year": 2017,
+						"make": "Ford",
+						"model": "F-250 Super Duty Extended Cab Long Bed",
+						"original_model": "F-250 Super Duty"
+					},
+					{
+						"vehicle_id": "400894925",
+						"type": "pickup ext cab",
+						"year": 2017,
+						"make": "Ford",
+						"model": "F-250 Super Duty Extended Cab Short Bed",
+						"original_model": "F-250 Super Duty"
+					},
+					{
+						"vehicle_id": "400894932",
+						"type": "pickup small",
+						"year": 2017,
+						"make": "Ford",
+						"model": "F-250 Super Duty Regular Cab",
+						"original_model": "F-250 Super Duty"
+					}
+				],
+				"items": [
+					{
+						"$ref": "#/definitions/model"
+					}
+				]
+			}
+		},
+		"NotFoundError": {
+			"description": "Resource not found.",
+			"schema": {
+				"type": "object",
+				"example": {
+					"message": "Unable to get quote for reference/resource=R2anvRJBBkPg73SYanjAhrYI0 the model did not respond on the correct time. Please check your parameter post and try again.",
+					"messageDate": "2018-03-22T13:35:57-05:00",
+					"status": 404,
+					"referenceId": null
+				},
+				"properties": {
+					"message": {
+						"type": "string",
+						"description": "Detailed message describing the reason for the error."
+					},
+					"messageDate": {
+						"type": "string",
+						"description": "Timestamp of the error message generation."
+					},
+					"status": {
+						"type": "integer",
+						"description": "HTTP response status code."
+					},
+					"referenceId": {
+						"type": "string",
+						"description": "Unique identifier of the quote to which the error message is related."
+					}
+				}
+			}
+		},
+		"NotAcceptableError": {
+			"description": "Invalid or missing parameter.",
+			"schema": {
+				"type": "object",
+				"example": {
+					"message": "Token is invalid.",
+					"messageDate": "2018-03-22T13:35:57-05:00",
+					"status": 406,
+					"referenceId": null
+				},
+				"properties": {
+					"message": {
+						"type": "string",
+						"description": "Detailed message describing the reason for the error."
+					},
+					"messageDate": {
+						"type": "string",
+						"description": "Timestamp of the error message generation."
+					},
+					"status": {
+						"type": "integer",
+						"description": "HTTP response status code."
+					},
+					"referenceId": {
+						"type": "string",
+						"description": "Unique identifier of the quote to which the error message is related."
+					}
+				}
+			}
+		}
+	},
+	"parameters": {
+		"quoteParam": {
+			"name": "body",
+			"description": "Quote object that is sent to the calculator",
+			"in": "body",
+			"required": true,
+			"schema": {
+				"$ref": "#/definitions/quote"
+			}
+		},
+		"yearParam": {
+			"name": "year",
+			"description": "Filter the returned results by vehicle manufacture year.",
+			"in": "query",
+			"type": "integer",
+			"minimum": 1918
+		},
+		"makeParam": {
+			"name": "make",
+			"description": "Filter the returned results by vehicle make.",
+			"in": "query",
+			"type": "string"
+		},
+		"refIdParam": {
+			"name": "refId",
+			"in": "path",
+			"description": "Reference ID of the quote.",
+			"required": true,
+			"type": "string"
+		},
+		"contentHeader": {
+			"name": "Content-Type",
+			"in": "header",
+			"description": "Content media type. The value is always `application/json`.",
+			"type": "string",
+			"default": "application/json",
+			"required": true
+		}
+	}
+}
