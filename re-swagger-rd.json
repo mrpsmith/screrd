@@ -8,23 +8,20 @@
 			"email": "integration@ship.cars"
 		}
 	},
-	"host": "rateengine.ship.cars",
+	"host": "ratesai.ship.cars",
 	"basePath": "/v1",
 	"tags": [
 		{
 			"name": "Quotes",
-			"description": "Manage predicted quotes"
+			"description": "Create and retrieve predicted quotes."
 		},
 		{
 			"name": "Vehicles",
-			"description": "Retrieve vehicle data"
+			"description": "Retrieve vehicle data from the database."
 		}
 	],
 	"schemes": [
 		"http"
-	],
-	"consumes": [
-		"application/json"
 	],
 	"produces": [
 		"application/json"
@@ -48,12 +45,11 @@
 					"Quotes"
 				],
 				"summary": "Create a new quote",
-				"description": "Creates a new quote object and returns the predicted quote details using synchronous mode.",
-				"operationId": "predictquote_create",
+				"description": "Creates a new quote resource and returns the predicted quote details using synchronous mode.",
+				"consumes": [
+					"application/json"
+				],
 				"parameters": [
-					{
-						"$ref": "#/parameters/contentHeader"
-					},
 					{
 						"$ref": "#/parameters/quoteParam"
 					}
@@ -68,14 +64,13 @@
 				}
 			}
 		},
-		"/predictquote/sync/{refId}": {
+		"/predictquote/sync/{reference_id}": {
 			"get": {
 				"tags": [
 					"Quotes"
 				],
-				"summary": "Return an identified quote",
+				"summary": "Retrieve an identified quote",
 				"description": "Returns the predicted quote details for an identified quote.",
-				"operationId": "predictquote_return",
 				"parameters": [
 					{
 						"$ref": "#/parameters/refIdParam"
@@ -99,9 +94,8 @@
 				"tags": [
 					"Vehicles"
 				],
-				"summary": "Return manufacture years",
+				"summary": "Retrieve manufacture years",
 				"description": "Returns the vehicle manufacture years in the database.",
-				"operationId": "vehicles_years",
 				"responses": {
 					"200": {
 						"$ref": "#/responses/yearsResponse"
@@ -117,9 +111,8 @@
 				"tags": [
 					"Vehicles"
 				],
-				"summary": "Return vehicle makes",
+				"summary": "Retrieve vehicle makes",
 				"description": "Returns the vehicle makes in the database.",
-				"operationId": "vehicles_makes",
 				"parameters": [
 					{
 						"$ref": "#/parameters/yearParam"
@@ -140,9 +133,8 @@
 				"tags": [
 					"Vehicles"
 				],
-				"summary": "Return vehicle models",
+				"summary": "Retrieve vehicle models",
 				"description": "Returns the vehicle models in the database.",
-				"operationId": "vehicles_models",
 				"parameters": [
 					{
 						"$ref": "#/parameters/yearParam"
@@ -173,14 +165,10 @@
 			],
 			"example": {
 				"pickup": {
-					"zip": "60607",
-					"city": "Chicago",
-					"state": "IL"
+					"zip": "60607"
 				},
 				"delivery": {
-					"zip": "33607",
-					"city": "Tampa",
-					"state": "FL"
+					"zip": "33607"
 				},
 				"vehicles": [
 					{
@@ -190,8 +178,7 @@
 						"running": true
 					}
 				],
-				"estimated_shipping_date": "2018-12-24",
-				"enclosed": false
+				"estimated_shipping_date": "2018-12-24"
 			},
 			"properties": {
 				"pickup": {
@@ -283,8 +270,7 @@
 							},
 							"running": {
 								"type": "boolean",
-								"description": "Indication of vehicle operability.",
-								"default": true
+								"description": "Indication of vehicle operability."
 							},
 							"type": {
 								"type": "string",
@@ -425,11 +411,8 @@
 		},
 		"yearsResponse": {
 			"description": "Success",
-			"schema": {
-				"type": "array",
-				"description": "List of vehicle manufacture years.",
-				"uniqueItems": true,
-				"example": [
+			"examples": {
+				"application/json": [
 					{
 						"year": 2018
 					},
@@ -445,7 +428,12 @@
 					{
 						"year": 2014
 					}
-				],
+				]
+			},
+			"schema": {
+				"type": "array",
+				"description": "List of vehicle manufacture years.",
+				"uniqueItems": true,
 				"items": [
 					{
 						"$ref": "#/definitions/year"
@@ -455,11 +443,8 @@
 		},
 		"makesResponse": {
 			"description": "Success",
-			"schema": {
-				"type": "array",
-				"description": "List of vehicle makes.",
-				"uniqueItems": true,
-				"example": [
+			"examples": {
+				"application/json": [
 					{
 						"make": "Cadillac"
 					},
@@ -475,7 +460,12 @@
 					{
 						"make": "Ram"
 					}
-				],
+				]
+			},
+			"schema": {
+				"type": "array",
+				"description": "List of vehicle makes.",
+				"uniqueItems": true,
 				"items": [
 					{
 						"$ref": "#/definitions/make"
@@ -485,11 +475,8 @@
 		},
 		"modelsResponse": {
 			"description": "Success",
-			"schema": {
-				"type": "array",
-				"description": "List of vehicle models.",
-				"uniqueItems": true,
-				"example": [
+			"examples": {
+				"application/json": [
 					{
 						"vehicle_id": "400894919",
 						"type": "pickup crew cab",
@@ -530,7 +517,12 @@
 						"model": "F-250 Super Duty Regular Cab",
 						"original_model": "F-250 Super Duty"
 					}
-				],
+				]
+			},
+			"schema": {
+				"type": "array",
+				"description": "List of vehicle models.",
+				"uniqueItems": true,
 				"items": [
 					{
 						"$ref": "#/definitions/model"
@@ -540,14 +532,16 @@
 		},
 		"NotFoundError": {
 			"description": "Resource not found.",
-			"schema": {
-				"type": "object",
-				"example": {
+			"examples": {
+				"application/json": {
 					"message": "Unable to get quote for reference/resource=R2anvRJBBkPg73SYanjAhrYI0 the model did not respond on the correct time. Please check your parameter post and try again.",
 					"messageDate": "2018-03-22T13:35:57-05:00",
 					"status": 404,
 					"referenceId": null
-				},
+				}
+			},
+			"schema": {
+				"type": "object",
 				"properties": {
 					"message": {
 						"type": "string",
@@ -570,14 +564,16 @@
 		},
 		"NotAcceptableError": {
 			"description": "Invalid or missing parameter.",
-			"schema": {
-				"type": "object",
-				"example": {
+			"examples": {
+				"application/json": {
 					"message": "Token is invalid.",
 					"messageDate": "2018-03-22T13:35:57-05:00",
 					"status": 406,
 					"referenceId": null
-				},
+				}
+			},
+			"schema": {
+				"type": "object",
 				"properties": {
 					"message": {
 						"type": "string",
@@ -601,8 +597,8 @@
 	},
 	"parameters": {
 		"quoteParam": {
-			"name": "body",
-			"description": "Quote object that is sent to the calculator",
+			"name": "quote",
+			"description": "Quote object that is sent to the calculator.",
 			"in": "body",
 			"required": true,
 			"schema": {
@@ -623,19 +619,11 @@
 			"type": "string"
 		},
 		"refIdParam": {
-			"name": "refId",
+			"name": "reference_id",
 			"in": "path",
 			"description": "Reference ID of the quote.",
 			"required": true,
 			"type": "string"
-		},
-		"contentHeader": {
-			"name": "Content-Type",
-			"in": "header",
-			"description": "Content media type. The value is always `application/json`.",
-			"type": "string",
-			"default": "application/json",
-			"required": true
 		}
 	}
 }
