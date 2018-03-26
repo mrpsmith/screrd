@@ -143,7 +143,7 @@ info:
   contact:
     email: integration@ship.cars
   x-logo:
-    url: "https://github.com/mrpsmith/screrd/blob/master/sc_logo.png"
+    url: "https://github.com/mrpsmith/screrd/blob/master/sc_logo.png?raw=true"
     backgroundColor: "#4a90e2"
 host: rateengine.ship.cars
 basePath: /v1
@@ -182,7 +182,7 @@ paths:
         - $ref: "#/parameters/contentHeader"
         - $ref: "#/parameters/quoteParam"
       x-code-samples:
-        - lang: curl
+        - lang: cURL
           source: |
             curl --request POST \
             --url 'http://rateengine.ship.cars/v1/predictquote/sync?token=5cbe12fb62f4941267d623499a2a4fd5948fd3ef' \
@@ -202,7 +202,7 @@ paths:
       parameters:
         - $ref: "#/parameters/refIdParam"
       x-code-samples:
-        - lang: json
+        - lang: cURL
           source: |
             curl --request GET \
             --url "http://ratesai.ship.cars/v1/predictquote/sync/R2anvRJBBkPg73SYanjAhrYIo?token=5cbe12fb62f4941267d623499a2a4fd5948fd3ef"
