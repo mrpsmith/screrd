@@ -68,7 +68,7 @@ info:
 
     Following is a sample API response:
 
-    ```json
+    ```http
     HTTP/1.1 201
     Date: Mon, 22 Mar 2018 18:27:50 GMT
     Content-Type: application/json
