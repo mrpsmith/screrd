@@ -207,7 +207,7 @@ paths:
         source: >
           curl --request GET \
           --url "http://ratesai.ship.cars/v1/predictquote/sync/R2anvRJBBkPg73SYanjAhrYIo?token=5cbe12fb62f4941267d623499a2a4fd5948fd3ef" \
-          --header "accept: application/json"
+        --header "accept: application/json"
       responses:
         202:
           $ref: "#/responses/quoteResponse"
