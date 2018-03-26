@@ -54,7 +54,7 @@ info:
 
     Following is a sample API request to the `/predictquote/sync` endpoint:
 
-    ```bash
+    ```curl
     curl --request POST \
     --url 'http://rateengine.ship.cars/v1/predictquote/sync?token=5cbe12fb62f4941267d623499a2a4fd5948fd3ef' \
     --header 'accept: application/json' \
