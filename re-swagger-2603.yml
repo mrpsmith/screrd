@@ -183,12 +183,7 @@ paths:
         - $ref: "#/parameters/quoteParam"
       x-code-samples:
         lang: curl
-        source: >
-          curl --request POST \
-          --url 'http://rateengine.ship.cars/v1/predictquote/sync?token=5cbe12fb62f4941267d623499a2a4fd5948fd3ef' \
-          --header 'accept: application/json' \
-          --header 'Content-Type: application/json' \
-          --data '{"pickup":{"zip":"60607"},"delivery":{"zip":"33607"},"vehicles":[{"year":2017,"make":"Ford","model":"F-250 Super Duty","running":true}],"estimated_shipping_date":"2018-12-24"}'
+        source: curl --request POST --url 'http://rateengine.ship.cars/v1/predictquote/sync?token=5cbe12fb62f4941267d623499a2a4fd5948fd3ef' --header 'accept: application/json' --header 'Content-Type: application/json' --data '{"pickup":{"zip":"60607"},"delivery":{"zip":"33607"},"vehicles":[{"year":2017,"make":"Ford","model":"F-250 Super Duty","running":true}],"estimated_shipping_date":"2018-12-24"}'
       responses:
         201:
           $ref: "#/responses/quoteResponse"
@@ -204,10 +199,7 @@ paths:
         - $ref: "#/parameters/refIdParam"
       x-code-samples:
         lang: json
-        source: >
-          curl --request GET \
-          --url "http://ratesai.ship.cars/v1/predictquote/sync/R2anvRJBBkPg73SYanjAhrYIo?token=5cbe12fb62f4941267d623499a2a4fd5948fd3ef" \
-          --header "accept: application/json"
+        source: curl --request GET --url "http://ratesai.ship.cars/v1/predictquote/sync/R2anvRJBBkPg73SYanjAhrYIo?token=5cbe12fb62f4941267d623499a2a4fd5948fd3ef" --header "accept: application/json"
       responses:
         202:
           $ref: "#/responses/quoteResponse"
