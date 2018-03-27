@@ -80,7 +80,7 @@ info:
     email: integration@ship.cars
   x-logo:
     url: 'https://ship.cars/2018-03-23_12-12-01/images/logomark.svg'
-    # backgroundColor: "#4a90e2"
+    backgroundColor: "#4a90e2"
 host: rateengine.ship.cars
 basePath: /v1
 x-servers:
@@ -161,7 +161,7 @@ paths:
         - lang: cURL
           source: |
             curl --request GET \
-            --url 'http://rateengine.ship.cars/v1/vehicles/years'
+            --url 'http://rateengine.ship.cars/v1/vehicles/years?token=5cbe12fb62f4941267d623499a2a4fd5948fd3ef'
       responses:
         200:
           $ref: "#/responses/yearsResponse"
@@ -376,7 +376,7 @@ responses:
     description: Success
     examples:
       application/json:
-        {"pickup":{"zip":"60607","city":"Chicago","state":"IL","lon":-87.6578,"lat":41.8721},"delivery":{"zip":"33607","city":"Tampa","state":"FL","lon":-82.4895,"lat":27.9625},"vehicles":[{"year":2017,"make":"Ford","model":"F-250 Super Duty","type":null,"running":true,"trim":null}],"estimated_shipping_date":"2018-12-24T092:00:00-05:00","enclosed":false,"reference_id":"R2anvRJBBkPg73SYanjAhrYIo","pr_cpay":1199.44}
+        {"pickup":{"zip":"60607","city":"Chicago","state":"IL","lon":-87.6578,"lat":41.8721},"delivery":{"zip":"33607","city":"Tampa","state":"FL","lon":-82.4895,"lat":27.9625},"vehicles":[{"year":2017,"make":"Ford","model":"F-250 Super Duty","type":null,"running":true,"trim":null}],"estimated_shipping_date":"2018-12-24T00:00:00-05:00","enclosed":false,"reference_id":"R2anvRJBBkPg73SYanjAhrYIo","pr_cpay":1199.44}
     schema:
       $ref: "#/definitions/quote"
   yearsResponse:
