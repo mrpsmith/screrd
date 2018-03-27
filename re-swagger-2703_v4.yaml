@@ -1,0 +1,450 @@
+swagger: "2.0"
+info:
+  description: |
+    # Overview
+
+    The Ship.Cars Rate Engine API makes it easy for external systems to access the Ship.Cars predictive calculator.
+
+    Using the Rate Engine API, you can submit car load details and get a predicted quote almost instantly. You can also retrieve the details of an existing quote or look up the Year-Make-Model vehicle data that is available in the database.
+
+    ## Resource URLs
+
+    The base URL for accessing the Rate Engine API is:
+
+    ```http
+    http://rateengine.ship.cars/
+    ```
+
+    In API calls, the base URL needs to be followed by the version number of the API (currently at version 1), the path to the specific resource, and your [API key](#section/Authentication). As a result, you can access specific resources with an HTTP request to:
+
+    ```http
+    http://rateengine.ship.cars/<version>/path/to/resource?token=<api-key>
+    ```
+
+    ## HTTP Methods
+
+    The Rate Engine API supports two HTTP methods, `GET` and `POST`.
+
+     *  a `GET` request retrieves an identified quote resource or an array of YMM resources.
+     *  a `POST` request creates a new quote resource.
+
+    ## Data Format
+
+    The Rate Engine API uses the JSON data format for requests and responses.
+
+    In `POST` requests, you need to include an HTTP header that specifies the request body type is JSON:
+
+    ```
+    Content-Type: application/json
+    ```
+
+    For all other requests, the HTTP header that specifies the accepted response type is optional.
+
+    ## Dates and Times
+
+    All dates and times use the ISO 8601 profile that is defined by W3C in the *[Date and Time Formats](https://www.w3.org/TR/NOTE-datetime)* document.
+
+    If you don't specify a timezone offset for datetimes in your requests, the assumed offset from UTC is the one of the US Central time zone (CST or CDT).
+
+    # Authentication
+
+    The Rate Engine API requires an API key to authenticate requests. You need to send a valid API key in the `token` query parameter.
+
+    <!-- ReDoc-Inject: <security-definitions> -->
+
+    To sign up for an account and receive an API key, contact us at [integration@ship.cars](mailto:integration@ship.cars).
+
+    ## Rate Limits
+
+    Access to the Rate Engine API is rate limitted per API key and you can make up to X requests per Y to API resources.
+
+    # Error Handling
+
+    The Rate Engine API uses standard HTTP status codes to indicate the success or failure of API calls.
+
+    In case of success, the API responds with a 2xx status code and returns the created or requested resource in the response body.
+
+    In case of failure, the API responds with a 4xx or a 5xx status code and returns details about the error in the response body.
+
+    The following table describes the most common status codes returned by the Rate Engine API with details about the most likely cause for errors.
+
+    | Status Code | Description | Most Likely Cause   |
+    |----------|--------------------|--------------------|
+    | 2xx      | Success            |                    |
+    | 404      | Resource not found | The identified quote resource doesn't exist.
+    | 406      | Invalid or missing parameter | The value of a required parameter is invalid or missing. |
+
+  version: "1.0.0"
+  title: Ship.Cars Rate Engine API
+  contact:
+    email: integration@ship.cars
+  x-logo:
+    url: "https://github.com/mrpsmith/screrd/blob/master/sc_logo.png"
+    backgroundColor: "#4a90e2"
+host: rateengine.ship.cars
+basePath: /v1
+x-servers:
+  - url: http://rateengine.ship.cars/v1
+    description: Server URL
+tags:
+  - name: Quotes
+    description: Access the predictive rate calculator and create or retrieve predicted quotes.
+  - name: Vehicles
+    description: Retrieve data for vehicle manufacture year, make, and model.
+schemes:
+  - http
+produces:
+  - application/json
+securityDefinitions:
+  QueryToken:
+    type: apiKey
+    in: query
+    name: token
+security:
+  - QueryToken: []
+paths:
+  /predictquote/sync:
+    post:
+      tags:
+        - "Quotes"
+      summary: Create a new quote
+      consumes:
+        - application/json
+      description: Creates a new quote resource and returns the predicted quote details using synchronous mode.
+      parameters:
+        - $ref: "#/parameters/contentHeader"
+        - $ref: "#/parameters/quoteParam"
+      x-code-samples:
+        - lang: cURL
+          source: |
+            curl --request POST \
+            --url 'http://rateengine.ship.cars/v1/predictquote/sync?token=5cbe12fb62f4941267d623499a2a4fd5948fd3ef' \
+            --header 'Content-Type: application/json' \
+            --data '{"pickup":{"zip":"60607"},"delivery":{"zip":"33607"},"vehicles":[{"year":2017,"make":"Ford","model":"F-250 Super Duty","running":true}],"estimated_shipping_date":"2018-12-24"}'
+      responses:
+        201:
+          $ref: "#/responses/quoteResponse"
+        406:
+          $ref: "#/responses/NotAcceptableError"
+  /predictquote/sync/{reference_id}:
+    get:
+      tags:
+        - "Quotes"
+      summary: Retrieve an identified quote
+      description: Returns the quote details for an identified predicted quote.
+      parameters:
+        - $ref: "#/parameters/refIdParam"
+      x-code-samples:
+        - lang: cURL
+          source: |
+            curl --request GET \
+            --url 'http://ratesai.ship.cars/v1/predictquote/sync/R2anvRJBBkPg73SYanjAhrYIo?token=5cbe12fb62f4941267d623499a2a4fd5948fd3ef'
+      responses:
+        202:
+          $ref: "#/responses/quoteResponse"
+        404:
+          $ref: "#/responses/NotFoundError"
+        406:
+          $ref: "#/responses/NotAcceptableError"
+  /vehicles/years:
+    get:
+      tags:
+        - "Vehicles"
+      summary: Retrieve manufacture years
+      description: Returns a list of the vehicle manufacture years in the database.
+      x-code-samples:
+        - lang: cURL
+          source: |
+            curl --request GET \
+            --url 'http://rateengine.ship.cars/v1/vehicles/years'
+      responses:
+        200:
+          $ref: "#/responses/yearsResponse"
+        406:
+          $ref: "#/responses/NotAcceptableError"
+  /vehicles/makes:
+    get:
+      tags:
+        - "Vehicles"
+      summary: Retrieve vehicle makes
+      description: Returns a list of the vehicle makes in the database. Optionally, you can filter the results by manufacture year.
+      parameters:
+        - $ref: "#/parameters/yearParam"
+      x-code-samples:
+        - lang: cURL
+          source: |
+            curl -request GET \
+            --url 'http://rateengine.ship.cars/v1/vehicles/makes?year=2017&token=5cbe12fb62f4941267d623499a2a4fd5948fd3ef'
+      responses:
+        200:
+          $ref: "#/responses/makesResponse"
+        406:
+          $ref: "#/responses/NotAcceptableError"
+  /vehicles/models:
+    get:
+      tags:
+        - "Vehicles"
+      summary: Retrieve vehicle models
+      description: Returns a list of the vehicle models in the database. Optionally, you can filter the results by manufacture year and vehicle make.
+      parameters:
+        - $ref: "#/parameters/yearParam"
+        - $ref: "#/parameters/makeParam"
+      x-code-samples:
+        - lang: cURL
+          source: |
+            curl --request GET \
+            --url 'http://rateengine.ship.cars/v1/vehicles/models?year=2017&make=tesla&token=5cbe12fb62f4941267d623499a2a4fd5948fd3ef'
+      responses:
+        200:
+          $ref: "#/responses/modelsResponse"
+        406:
+          $ref: "#/responses/NotAcceptableError"
+definitions:
+  quote:
+    type: object
+    required:
+      - "pickup"
+      - "delivery"
+      - "vehicles"
+      - "estimated_shipping_date"
+    example:
+      {"pickup":{"zip":"60607"},"delivery":{"zip":"33607"},"vehicles":[{"year":2017,"make":"Ford","model":"F-250 Super Duty","running":true}],"estimated_shipping_date":"2018-12-24"}
+    properties:
+      pickup:
+        type: object
+        required:
+          - "zip"
+        properties:
+          zip:
+            type: string
+            description: Zip code of the vehicle pickup location.
+          city:
+            type: string
+            description: City of the vehicle pickup location.
+          state:
+            type: string
+            description: Two-letter abbreviation of the state of the vehicle pickup location.
+          lon:
+            type: number
+            format: float
+            readOnly: true
+            description: Longitude of the vehicle pickup location coordinates.
+          lat:
+            type: number
+            format: float
+            readOnly: true
+            description: Latitude of the vehicle puckup location coordinates.
+      delivery:
+        type: object
+        required:
+          - "zip"
+        properties:
+          zip:
+            type: string
+            description: Zip code of the vehicle delivery location.
+          city:
+            type: string
+            description: City of the vehicle delivery location.
+          state:
+            type: string
+            description: Two-letter abbreviation of the state of the vehicle delivery location.
+          lon:
+            type: number
+            format: float
+            readOnly: true
+            description: Longitude of the vehicle delivery location coordinates.
+          lat:
+            type: number
+            format: float
+            readOnly: true
+            description: Latitude of the vehicle delivery location coordinates.
+      vehicles:
+        type: array
+        items:
+          type: object
+          required:
+            - "year"
+            - "make"
+            - "model"
+            - "running"
+          properties:
+            year:
+              type: integer
+              description: Vehicle manufacture year.
+            make:
+              type: string
+              description: Vehicle make.
+            model:
+              type: string
+              description: Vehicle model.
+            running:
+              type: boolean
+              description: Indication of vehicle operability.
+            type:
+              type: string
+              description: Vehicle type.
+            trim:
+              type: string
+              description: Vehicle model trim level.
+      estimated_shipping_date:
+        type: string
+        format: date-time
+        description: Estimated shipping date in ISO-8601 format.
+      enclosed:
+        type: boolean
+        description: Trailer type requirement, enclosed or open.
+        default: false
+      reference_id:
+        type: string
+        readOnly: true
+        description: Unique reference ID of the quote.
+      pr_cpay:
+        type: number
+        format: float
+        readOnly: true
+        description: Predicted carrier payment amount.
+  year:
+    type: object
+    properties:
+      year:
+        type: integer
+        description: Vehicle manufacture year.
+  make:
+    type: object
+    properties:
+      make:
+        type: string
+        description: Vehicle make.
+  model:
+    type: object
+    properties:
+      vehicle_id:
+        type: integer
+        description: Unique identifier of the vehicle record for a specific combination of year, make, and model (including sub-model details).
+      type:
+        type: string
+        description: Vehicle type label with additional information about the body type.
+        enum:
+          - "cargo van large"
+          - "cargo van small"
+          - "mini-van"
+          - "passenger van (8-12 people)"
+          - "passenger van (over 12 people)"
+          - "pickup crew cab"
+          - "pickup dually"
+          - "pickup ext cab"
+          - "pickup small"
+          - "sedan compact"
+          - "sedan large"
+          - "sedan midsize"
+          - "sedan small"
+          - "suv midsize"
+      year:
+        type: integer
+        description: Vehicle manufacture year.
+      make:
+        type: string
+        description: Vehicle make.
+      model:
+        type: string
+        description: Vehicle model label with additional information about the sub-model and trim level.
+      original_model:
+        type: string
+        description: Vehicle model.
+  Error:
+    type: object
+    properties:
+      message:
+        type: string
+        description: Detailed message describing the reason for the error.
+      messageDate:
+        type: string
+        description: Date and time of the error message generation.
+      status:
+        type: integer
+        description: HTTP response status code.
+      referenceId:
+        type: string
+        description: Unique identifier of the quote to which the error message is related.
+responses:
+  quoteResponse:
+    description: Success
+    examples:
+      application/json:
+        {"pickup":{"zip":"60607","city":"Chicago","state":"IL","lon":-87.6578,"lat":41.8721},"delivery":{"zip":"33607","city":"Tampa","state":"FL","lon":-82.4895,"lat":27.9625},"vehicles":[{"year":2017,"make":"Ford","model":"F-250 Super Duty","type":null,"running":true,"trim":null}],"estimated_shipping_date":"2018-12-24T092:00:00-05:00","enclosed":false,"reference_id":"R2anvRJBBkPg73SYanjAhrYIo","pr_cpay":1199.44}
+    schema:
+      $ref: "#/definitions/quote"
+  yearsResponse:
+    description: Success
+    schema:
+      type: array
+      description: List of vehicle manufacture years.
+      uniqueItems: true
+      example: [{"year":2018},{"year":2017},{"year":2016},{"year":2015},{"year":2014}]
+      items:
+        - $ref: "#/definitions/year"
+  makesResponse:
+    description: Success
+    schema:
+      type: array
+      description: List of vehicle makes.
+      uniqueItems: true
+      example: [{"make":"Acura"},{"make":"Alfa Romeo"},{"make":"Aston Martin"},{"make":"Audi"},{"make":"Bentley"},{"make":"BMW"},{"make":"Buick"},{"make":"Cadillac"},{"make":"Chevrolet"},{"make":"Chrysler"},{"make":"Dodge"},{"make":"Ferrari"},{"make":"FIAT"},{"make":"Ford"},{"make":"Genesis"},{"make":"GMC"},{"make":"Honda"},{"make":"Hyundai"},{"make":"INFINITI"},{"make":"Jaguar"},{"make":"Jeep"},{"make":"Kia"},{"make":"Lamborghini"},{"make":"Land Rover"},{"make":"Lexus"},{"make":"Lincoln"},{"make":"Lotus"},{"make":"Maserati"},{"make":"Mazda"},{"make":"McLaren"},{"make":"Mercedes-Benz"},{"make":"MINI"},{"make":"Mitsubishi"},{"make":"Nissan"},{"make":"Porsche"},{"make":"Ram"},{"make":"Rolls-Royce"},{"make":"Smart"},{"make":"Subaru"},{"make":"Tesla"},{"make":"Toyota"},{"make":"Volkswagen"},{"make":"Volvo"}]
+      items:
+        - $ref: "#/definitions/make"
+  modelsResponse:
+    description: Success
+    schema:
+      type: array
+      description: List of vehicle models.
+      uniqueItems: true
+      example: [{"vehicle_id":"400897443","type":"sedan midsize","vehicle_type":"Car","body_type":"Sedan","year":2017,"make":"Tesla","model":"Model S","original_model":"Model S"},{"vehicle_id":"400897434","type":"suv midsize","vehicle_type":"SUV","body_type":"SUV","year":2017,"make":"Tesla","model":"Model X","original_model":"Model X"}]
+      items:
+        - $ref: "#/definitions/model"
+  NotFoundError:
+    description: Resource not found
+    examples:
+      application/json:
+        {"message": "Unable to get quote for reference/resource=R2anvRJBBkPg73SYanjAhrYI0 the model did not respond on the correct time. Please check your parameter post and try again.","messageDate": "2018-03-22T13:35:57-05:00","status": 404,"referenceId": null}
+    schema:
+      $ref: "#/definitions/Error"
+  NotAcceptableError:
+    description: Invalid or missing parameter
+    examples:
+      application/json:
+        {"message": "Token is invalid.","messageDate": "2018-03-22T13:35:57-05:00","status": 406,"referenceId": null}
+    schema:
+      $ref: "#/definitions/Error"
+parameters:
+  quoteParam:
+    name: body
+    description: Quote object that is sent to the calculator
+    in: body
+    required: true
+    schema:
+      $ref: "#/definitions/quote"
+  yearParam:
+    name: year
+    description: Filter the returned results by vehicle manufacture year.
+    in: query
+    type: integer
+    minimum: 1918
+  makeParam:
+    name: make
+    description: Filter the returned results by vehicle make.
+    in: query
+    type: string
+  refIdParam:
+    name: reference_id
+    in: path
+    description: Reference ID of the quote.
+    required: true
+    type: string
+  contentHeader:
+    name: Content-Type
+    in: header
+    description: Request content type. The value is always `application/json`.
+    type: string
+    enum:
+      - application/json
+    required: true
