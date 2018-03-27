@@ -154,9 +154,9 @@ x-servers:
     description: Staging server
 tags:
   - name: Quotes
-    description: Allows you access the predictive rate calculator and create and retrieve predicted quotes.
+    description: Access the predictive rate calculator and create or retrieve predicted quotes.
   - name: Vehicles
-    description: Allows you to retrieve vehicle Year-Make-Model data from the database.
+    description: Retrieve data for vehicle manufacture year, make, and model.
 schemes:
   - http
 produces:
@@ -198,14 +198,14 @@ paths:
       tags:
         - "Quotes"
       summary: Retrieve an identified quote
-      description: Returns the predicted quote details for an identified quote.
+      description: Returns the quote details for an identified predicted quote.
       parameters:
         - $ref: "#/parameters/refIdParam"
       x-code-samples:
         - lang: cURL
           source: |
             curl --request GET \
-            --url "http://ratesai.ship.cars/v1/predictquote/sync/R2anvRJBBkPg73SYanjAhrYIo?token=5cbe12fb62f4941267d623499a2a4fd5948fd3ef"
+            --url 'http://ratesai.ship.cars/v1/predictquote/sync/R2anvRJBBkPg73SYanjAhrYIo?token=5cbe12fb62f4941267d623499a2a4fd5948fd3ef'
       responses:
         202:
           $ref: "#/responses/quoteResponse"
@@ -218,7 +218,12 @@ paths:
       tags:
         - "Vehicles"
       summary: Retrieve manufacture years
-      description: Returns the vehicle manufacture years in the database.
+      description: Returns a list of the vehicle manufacture years in the database.
+      x-code-samples:
+        - lang: cURL
+          source: |
+            curl --request GET \
+            --url 'http://rateengine.ship.cars/v1/vehicles/years'
       responses:
         200:
           $ref: "#/responses/yearsResponse"
@@ -229,9 +234,14 @@ paths:
       tags:
         - "Vehicles"
       summary: Retrieve vehicle makes
-      description: Returns the vehicle makes in the database.
+      description: Returns a list of the vehicle makes in the database. Optionally, you can filter the results by manufacture year.
       parameters:
         - $ref: "#/parameters/yearParam"
+      x-code-samples:
+        - lang: cURL
+          source: |
+            curl -request GET \
+            --url 'http://rateengine.ship.cars/v1/vehicles/makes?year=2017&token=5cbe12fb62f4941267d623499a2a4fd5948fd3ef'
       responses:
         200:
           $ref: "#/responses/makesResponse"
@@ -242,10 +252,15 @@ paths:
       tags:
         - "Vehicles"
       summary: Retrieve vehicle models
-      description: Returns the vehicle models in the database.
+      description: Returns a list of the vehicle models in the database. Optionally, you can filter the results by manufacture year and vehicle make.
       parameters:
         - $ref: "#/parameters/yearParam"
         - $ref: "#/parameters/makeParam"
+      x-code-samples:
+        - lang: cURL
+          source: |
+            curl --request GET \
+            --url 'http://rateengine.ship.cars/v1/vehicles/models?year=2017&make=tesla&token=5cbe12fb62f4941267d623499a2a4fd5948fd3ef'
       responses:
         200:
           $ref: "#/responses/modelsResponse"
@@ -280,7 +295,7 @@ definitions:
             type: number
             format: float
             readOnly: true
-            description: Longiture of the vehicle pickup location coordinates.
+            description: Longitude of the vehicle pickup location coordinates.
           lat:
             type: number
             format: float
@@ -304,7 +319,7 @@ definitions:
             type: number
             format: float
             readOnly: true
-            description: Longiture of the vehicle delivery location coordinates.
+            description: Longitude of the vehicle delivery location coordinates.
           lat:
             type: number
             format: float
@@ -403,6 +418,21 @@ definitions:
       original_model:
         type: string
         description: Vehicle model.
+  Error:
+    type: object
+    properties:
+      message:
+        type: string
+        description: Detailed message describing the reason for the error.
+      messageDate:
+        type: string
+        description: Date and time of the error message generation.
+      status:
+        type: integer
+        description: HTTP response status code.
+      referenceId:
+        type: string
+        description: Unique identifier of the quote to which the error message is related.
 responses:
   quoteResponse:
     description: Success
@@ -426,7 +456,7 @@ responses:
       type: array
       description: List of vehicle makes.
       uniqueItems: true
-      example: [{"make":"Cadillac"},{"make":"Dodge"},{"make":"Ford"},{"make":"GMC"},{"make":"Ram"}]
+      example: [{"make":"Acura"},{"make":"Alfa Romeo"},{"make":"Aston Martin"},{"make":"Audi"},{"make":"Bentley"},{"make":"BMW"},{"make":"Buick"},{"make":"Cadillac"},{"make":"Chevrolet"},{"make":"Chrysler"},{"make":"Dodge"},{"make":"Ferrari"},{"make":"FIAT"},{"make":"Ford"},{"make":"Genesis"},{"make":"GMC"},{"make":"Honda"},{"make":"Hyundai"},{"make":"INFINITI"},{"make":"Jaguar"},{"make":"Jeep"},{"make":"Kia"},{"make":"Lamborghini"},{"make":"Land Rover"},{"make":"Lexus"},{"make":"Lincoln"},{"make":"Lotus"},{"make":"Maserati"},{"make":"Mazda"},{"make":"McLaren"},{"make":"Mercedes-Benz"},{"make":"MINI"},{"make":"Mitsubishi"},{"make":"Nissan"},{"make":"Porsche"},{"make":"Ram"},{"make":"Rolls-Royce"},{"make":"Smart"},{"make":"Subaru"},{"make":"Tesla"},{"make":"Toyota"},{"make":"Volkswagen"},{"make":"Volvo"}]
       items:
         - $ref: "#/definitions/make"
   modelsResponse:
@@ -435,45 +465,23 @@ responses:
       type: array
       description: List of vehicle models.
       uniqueItems: true
-      example: [{"vehicle_id":"400894919","type":"pickup crew cab","year":2017,"make":"Ford","model":"F-250 Super Duty Crew Cab Long Bed","original_model":"F-250 Super Duty"},{"vehicle_id":"400894939","type":"pickup crew cab","year":2017,"make":"Ford","model":"F-250 Super Duty Crew Cab Short Bed","original_model":"F-250 Super Duty"},{"vehicle_id":"400894914","type":"pickup ext cab","year":2017,"make":"Ford","model":"F-250 Super Duty Extended Cab Long Bed","original_model":"F-250 Super Duty"},{"vehicle_id":"400894925","type":"pickup ext cab","year":2017,"make":"Ford","model":"F-250 Super Duty Extended Cab Short Bed","original_model":"F-250 Super Duty"},{"vehicle_id":"400894932","type":"pickup small","year":2017,"make":"Ford","model":"F-250 Super Duty Regular Cab","original_model":"F-250 Super Duty"}]
+      example: [{"vehicle_id":"400897443","type":"sedan midsize","vehicle_type":"Car","body_type":"Sedan","year":2017,"make":"Tesla","model":"Model S","original_model":"Model S"},{"vehicle_id":"400897434","type":"suv midsize","vehicle_type":"SUV","body_type":"SUV","year":2017,"make":"Tesla","model":"Model X","original_model":"Model X"}]
       items:
         - $ref: "#/definitions/model"
   NotFoundError:
-    description: Resource not found.
+    description: Resource not found
+    examples:
+      application/json:
+        {"message": "Unable to get quote for reference/resource=R2anvRJBBkPg73SYanjAhrYI0 the model did not respond on the correct time. Please check your parameter post and try again.","messageDate": "2018-03-22T13:35:57-05:00","status": 404,"referenceId": null}
     schema:
-      type: object
-      example: {"message": "Unable to get quote for reference/resource=R2anvRJBBkPg73SYanjAhrYI0 the model did not respond on the correct time. Please check your parameter post and try again.","messageDate": "2018-03-22T13:35:57-05:00","status": 404,"referenceId": null}
-      properties:
-        message:
-          type: string
-          description: Detailed message describing the reason for the error.
-        messageDate:
-          type: string
-          description: Timestamp of the error message generation.
-        status:
-          type: integer
-          description: HTTP response status code.
-        referenceId:
-          type: string
-          description: Unique identifier of the quote to which the error message is related.
+      $ref: "#/definitions/Error"
   NotAcceptableError:
-    description: Invalid or missing parameter.
+    description: Invalid or missing parameter
+    examples:
+      application/json:
+        {"message": "Token is invalid.","messageDate": "2018-03-22T13:35:57-05:00","status": 406,"referenceId": null}
     schema:
-      type: object
-      example: {"message": "Token is invalid.","messageDate": "2018-03-22T13:35:57-05:00","status": 406,"referenceId": null}
-      properties:
-        message:
-          type: string
-          description: Detailed message describing the reason for the error.
-        messageDate:
-          type: string
-          description: Timestamp of the error message generation.
-        status:
-          type: integer
-          description: HTTP response status code.
-        referenceId:
-          type: string
-          description: Unique identifier of the quote to which the error message is related.
+      $ref: "#/definitions/Error"
 parameters:
   quoteParam:
     name: body
