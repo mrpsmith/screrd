@@ -80,7 +80,7 @@ info:
     email: integration@ship.cars
   x-logo:
     url: 'https://ship.cars/2018-03-23_12-12-01/images/logomark.svg'
-    backgroundColor: "#4a90e2"
+    # backgroundColor: "#4a90e2"
 host: rateengine.ship.cars
 basePath: /v1
 x-servers:
