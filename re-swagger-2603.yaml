@@ -157,6 +157,11 @@ tags:
     description: Access the predictive rate calculator and create or retrieve predicted quotes.
   - name: Vehicles
     description: Retrieve data for vehicle manufacture year, make, and model.
+x-tagGroups:
+  - name: Resources
+    tags:
+      - Quotes
+      - Vehicles
 schemes:
   - http
 produces:
