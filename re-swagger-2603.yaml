@@ -3,7 +3,7 @@ info:
   description: |
     The Ship.Cars Rate Engine API makes it easy to access the Ship.Cars predictive calculator in synchronous mode. It allows you to submit load details for prediction and get a predicted quote almost instantly. You can also retrieve the details of an existing quote or look up the vehicle Year-Make-Model data that is available in the database.
 
-    # Overview
+    ## Overview
 
     The Rate Engine API uses the JSON data format for requests and responses and is secured with an API key passed as a query parameter.
 
@@ -21,14 +21,14 @@ info:
 
     All dates and times use the ISO 8601 profile that is defined by W3C in the [Date and Time Formats](https://www.w3.org/TR/NOTE-datetime) document. If you don't specify a timezone in your request, the assumed offset from UTC time is applicable offset of the US Central time zome (CST or CDT).
 
-    # HTTP Methods
+    ## HTTP Methods
 
     The Rate Engine API supports the `GET` and `POST` HTTP methods.
 
      *  a `GET` request retrieves an identified quote resource or an array of YMM resources.
      *  a `POST` request creates a new quote resource.
 
-    # Authentication
+    ## Authentication
 
     <!-- ReDoc-Inject: <security-definitions> -->
 
@@ -62,7 +62,7 @@ info:
     --data '{"pickup":{"zip":"60607"},"delivery":{"zip":"33607"},"vehicles":[{"year":2017,"make":"Ford","model":"F-250 Super Duty","running":true}],"estimated_shipping_date":"2018-12-24"}'
     ```
 
-    # Responses
+    ## Responses
 
     All API responses include HTTP headers and a JSON-formatted response body. The **HTTP Status** header contains the status code of the operation.
 
@@ -113,7 +113,7 @@ info:
     }
     ```
 
-    # Status Codes and Response Messages
+    ## Status Codes and Response Messages
 
     The Ship.Cars Rate Engine API responds with standard HTTP response status codes in the 200, 300, 400, and 500 ranges. Your application should handle each of these classes differently.
 
