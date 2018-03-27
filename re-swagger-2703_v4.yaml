@@ -42,9 +42,9 @@ info:
 
     ## Dates and Times
 
-    All dates and times use the ISO 8601 profile that is defined by W3C in the *[Date and Time Formats](https://www.w3.org/TR/NOTE-datetime)* document.
+    All dates and times use the ISO 8601 profile as defined by W3C in the *[Date and Time Formats](https://www.w3.org/TR/NOTE-datetime)* document.
 
-    If you don't specify a timezone offset for datetimes in your requests, the assumed offset from UTC is the one of the US Central time zone (CST or CDT).
+    If you don't specify a timezone offset for datetimes in your requests, the assumed offset is UTC -6 hours, the offset of US Central Standard Time (CST).
 
     # Authentication
 
@@ -80,7 +80,7 @@ info:
     email: integration@ship.cars
   x-logo:
     url: 'https://ship.cars/2018-03-23_12-12-01/images/logomark.svg'
-    backgroundColor: "#4a90e2"
+    # backgroundColor: "#4a90e2"
 host: rateengine.ship.cars
 basePath: /v1
 x-servers:
@@ -376,7 +376,7 @@ responses:
     description: Success
     examples:
       application/json:
-        {"pickup":{"zip":"60607","city":"Chicago","state":"IL","lon":-87.6578,"lat":41.8721},"delivery":{"zip":"33607","city":"Tampa","state":"FL","lon":-82.4895,"lat":27.9625},"vehicles":[{"year":2017,"make":"Ford","model":"F-250 Super Duty","type":null,"running":true,"trim":null}],"estimated_shipping_date":"2018-12-24T00:00:00-05:00","enclosed":false,"reference_id":"R2anvRJBBkPg73SYanjAhrYIo","pr_cpay":1199.44}
+        {"pickup":{"zip":"60607","city":"Chicago","state":"IL","lon":-87.6578,"lat":41.8721},"delivery":{"zip":"33607","city":"Tampa","state":"FL","lon":-82.4895,"lat":27.9625},"vehicles":[{"year":2017,"make":"Ford","model":"F-250 Super Duty","type":null,"running":true,"trim":null}],"estimated_shipping_date":"2018-12-24T00:00:00-06:00","enclosed":false,"reference_id":"R2anvRJBBkPg73SYanjAhrYIo","pr_cpay":1199.44}
     schema:
       $ref: "#/definitions/quote"
   yearsResponse:
@@ -410,14 +410,14 @@ responses:
     description: Resource not found
     examples:
       application/json:
-        {"message": "Unable to get quote for reference/resource=R2anvRJBBkPg73SYanjAhrYI0 the model did not respond on the correct time. Please check your parameter post and try again.","messageDate": "2018-03-22T13:35:57-05:00","status": 404,"referenceId": null}
+        {"message": "Unable to get quote for reference/resource=R2anvRJBBkPg73SYanjAhrYI0 the model did not respond on the correct time. Please check your parameter post and try again.","messageDate": "2018-03-22T13:35:42-06:00","status": 404,"referenceId": null}
     schema:
       $ref: "#/definitions/Error"
   NotAcceptableError:
     description: Invalid or missing parameter
     examples:
       application/json:
-        {"message": "Token is invalid.","messageDate": "2018-03-22T13:35:57-05:00","status": 406,"referenceId": null}
+        {"message": "Token is invalid.","messageDate": "2018-03-22T13:35:57-06:00","status": 406,"referenceId": null}
     schema:
       $ref: "#/definitions/Error"
 parameters:
