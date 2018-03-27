@@ -143,8 +143,8 @@ info:
   contact:
     email: integration@ship.cars
   x-logo:
-    url: "https://github.com/mrpsmith/screrd/blob/master/sc_logo_1.png?raw=true"
-    backgroundColor: "#4a90e2"
+    url: 'https://github.com/mrpsmith/screrd/blob/master/sc_logo_blue.svg'
+    # backgroundColor: "#4a90e2"
 host: rateengine.ship.cars
 basePath: /v1
 x-servers:
