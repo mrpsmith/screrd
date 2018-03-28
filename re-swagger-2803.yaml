@@ -76,7 +76,7 @@ info:
     | 404      | Resource not found | The identified quote resource doesn't exist.
     | 406      | Invalid or missing parameter | The value of a required parameter is invalid or missing. |
 
-  version: "v1"
+  version: "1.0"
   title: Ship.Cars Rate Engine API
   contact:
     email: integration@ship.cars
