@@ -269,9 +269,9 @@ definitions:
             description: Latitude of the vehicle delivery location coordinates.
       vehicles:
         type: array
-        desciption: Details of the transported vehicle.
         items:
           type: object
+          desciption: Details of the transported vehicle.
           required:
             - "year"
             - "make"
