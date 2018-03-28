@@ -180,7 +180,7 @@ paths:
       x-code-samples:
         - lang: cURL
           source: |
-            curl -request GET \
+            curl --request GET \
             --url 'http://rateengine.ship.cars/v1/vehicles/makes?year=2017&token=5cbe12fb62f4941267d623499a2a4fd5948fd3ef'
       responses:
         200:
