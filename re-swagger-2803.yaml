@@ -138,7 +138,7 @@ paths:
       tags:
         - "Quotes"
       summary: Retrieve an identified quote
-      description: Returns the quote details for an identified predicted quote.
+      description: Returns the quote details for an identified predicted quote using synchronous mode.
       parameters:
         - $ref: "#/parameters/refIdParam"
       x-code-samples:
@@ -174,7 +174,7 @@ paths:
       tags:
         - "Vehicles"
       summary: Retrieve vehicle makes
-      description: Returns a list of the vehicle makes in the database. Optionally, you can filter the results by manufacture year.
+      description: Returns a list of the vehicle makes in the database. Using the `year` query parameter, you can optionally filter the results by manufacture year.
       parameters:
         - $ref: "#/parameters/yearParam"
       x-code-samples:
@@ -192,7 +192,7 @@ paths:
       tags:
         - "Vehicles"
       summary: Retrieve vehicle models
-      description: Returns a list of the vehicle models in the database. Optionally, you can filter the results by manufacture year and vehicle make.
+      description: Returns a list of the vehicle models in the database. Using the `year` and `make` query parameters, you can optionally filter the results by manufacture year and vehicle make.
       parameters:
         - $ref: "#/parameters/yearParam"
         - $ref: "#/parameters/makeParam"
@@ -219,6 +219,7 @@ definitions:
     properties:
       pickup:
         type: object
+        description: Details of the vehicle pickup location.
         required:
           - "zip"
         properties:
@@ -243,6 +244,7 @@ definitions:
             description: Latitude of the vehicle puckup location coordinates.
       delivery:
         type: object
+        description: Details of the vehicle delivery location.
         required:
           - "zip"
         properties:
@@ -267,6 +269,7 @@ definitions:
             description: Latitude of the vehicle delivery location coordinates.
       vehicles:
         type: array
+        desciption: Details of the transported vehicle.
         items:
           type: object
           required:
@@ -312,18 +315,21 @@ definitions:
         description: Predicted carrier payment amount.
   year:
     type: object
+    description: List of vehicle manufacture years.
     properties:
       year:
         type: integer
         description: Vehicle manufacture year.
   make:
     type: object
+    description: List of vehicle makes.
     properties:
       make:
         type: string
         description: Vehicle make.
   model:
     type: object
+    description: List of vehicle models grouped by manufacture year, make, and sub-model (if applicable).
     properties:
       vehicle_id:
         type: integer
