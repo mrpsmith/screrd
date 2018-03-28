@@ -5,7 +5,7 @@ info:
 
     The Ship.Cars Rate Engine API makes it easy to access the Ship.Cars predictive calculator.
 
-    Using the API endpoints, you can submit car load details and get a predicted quote almost instantly. You can also retrieve the details of an existing quote or look up the Year-Make-Model vehicle data that is available in the database.
+    Using the API endpoints, you can submit vehicle load details and get a predicted quote almost instantly. You can also retrieve the details of an existing quote or look up the Year-Make-Model vehicle data that is available in the database.
 
     ## Resource URLs
 
@@ -15,7 +15,7 @@ info:
     http://rateengine.ship.cars/
     ```
 
-    In API calls, the base URL needs to be followed by the version number of the API (currently at version 1), the path to the specific resource, and your [API key](#section/Authentication). To access specific resources, you need to make an HTTP request like the one below.
+    In API calls, the base URL needs to be followed by the version number of the API (currently at version 1), the path to the specific resource, and your [API key](#section/Authentication) in the `token` query parameter. To access specific resources, you need to make an HTTP request like the one below.
 
     ```http
     http://rateengine.ship.cars/<version>/path/to/resource?token=<api-key>
@@ -38,17 +38,17 @@ info:
     Content-Type: application/json
     ```
 
-    In all other requests, the HTTP header that specifies the accepted response type is optional.
+    In all requests, the HTTP header that specifies the accepted content type of the response is optional and `application/json` is used by default.
 
     ## Dates and Times
 
-    All dates and times use the ISO 8601 profile as defined by W3C in the *[Date and Time Formats](https://www.w3.org/TR/NOTE-datetime)* document.
+    All dates and times use the supported formats from the ISO 8601 profile that is defined by W3C in the *[Date and Time Formats](https://www.w3.org/TR/NOTE-datetime)* document.
 
-    If you don't specify a timezone offset for dates and times in your requests, the assumed offset is UTC -6, i.e. the offset of the US Central Standard Time zone (CST).
+    If you don't specify a time and a timezone offset for dates in `POST` requests, the assumed time is midnight (00:00) and the assumed offset is UTC -6, i.e. the offset of the US Central Standard Time zone (CST).
 
     # Authentication
 
-    The Rate Engine API requires an API key for authentication. In all your requests, you need to send a valid API key in the `token` query parameter.
+    The Rate Engine API requires an API key for authentication. In all API calls, you need to send a valid API key in the `token` query parameter.
 
     <!-- ReDoc-Inject: <security-definitions> -->
 
@@ -56,9 +56,9 @@ info:
 
     ## Rate Limits
 
-    Access to the `/predictquote` endpoint is rate limitted per API key. By default, the limit is 100 requests per hour. However, if you need a higher limit, you can contact us at [rateengine@ship.cars](mailto:rateengine@ship.cars).
+    API calls to the `/predictquote` endpoint are rate limitted per API key. By default, the limit is 100 requests per hour. However, if you need a higher limit, you can contact us at [rateengine@ship.cars](mailto:rateengine@ship.cars).
 
-    Access to the `/vehicles` endpoints is not rate limitted.
+    API calls to the `/vehicles` endpoints are not rate limitted.
 
     # Error Handling
 
@@ -68,7 +68,7 @@ info:
 
     In case of failure, the API responds with a 4xx or a 5xx status code and returns details about the error in the response body.
 
-    The following table describes the most common status codes returned by the Rate Engine API with details about the most likely cause for errors.
+    The following table describes the most common status codes returned by the Rate Engine API with details about the most likely cause for failure.
 
     | Status Code | Description | Most Likely Cause   |
     |----------|--------------------|--------------------|
@@ -79,7 +79,7 @@ info:
   version: "1.0"
   title: Ship.Cars Rate Engine API
   contact:
-    email: integration@ship.cars
+    email: rateengine@ship.cars
   x-logo:
     url: 'https://ship.cars/2018-03-23_12-12-01/images/logomark.svg'
     # backgroundColor: "#4a90e2"
@@ -271,7 +271,6 @@ definitions:
         type: array
         items:
           type: object
-          desciption: Details of the transported vehicle.
           required:
             - "year"
             - "make"
@@ -409,7 +408,7 @@ responses:
     description: Success
     schema:
       type: array
-      description: List of vehicle models.
+      description: List of vehicle models grouped by manufacture year, make, and sub-model (if applicable).
       uniqueItems: true
       example: [{"vehicle_id":"400897443","type":"sedan midsize","vehicle_type":"Car","body_type":"Sedan","year":2017,"make":"Tesla","model":"Model S","original_model":"Model S"},{"vehicle_id":"400897434","type":"suv midsize","vehicle_type":"SUV","body_type":"SUV","year":2017,"make":"Tesla","model":"Model X","original_model":"Model X"}]
       items:
