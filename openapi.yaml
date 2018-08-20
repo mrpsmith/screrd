@@ -22,6 +22,7 @@ paths:
   /checkouts:
     get:
       description: Lists all checkout resources.
+      summary: List checkouts
       tags:
         - Checkouts
       security:
@@ -37,7 +38,8 @@ paths:
         "401":
           $ref: "#/components/responses/errorNotAuthorized"
     post:
-      description: Create a new payment checkout resource
+      description: Create a new payment checkout resource.
+      summary: Create a checkout
       tags:
         - Checkouts
       security:
@@ -59,6 +61,7 @@ paths:
       - $ref: "#/components/parameters/checkoutId"
     get:
       description: Retrieves an identified checkout resource.
+      summary: Retrieve a checkout
       tags:
         - Checkouts
       security:
@@ -73,6 +76,7 @@ paths:
           $ref: "#/components/responses/errorNotFound"
     put:
       description: Processes an identified checkout resource with the specified payment instrument.
+      summary: Process a checkout
       tags:
         - Checkouts
       security:
@@ -93,6 +97,7 @@ paths:
           $ref: "#/components/responses/errorConflict"
     delete:
       description: Deactivates an identified checkout resource.
+      summary: Deactivate a checkout
       tags:
         - Checkouts
       security:
@@ -110,6 +115,7 @@ paths:
   /customers:
     post:
       description: Creates a new saved customer resource.
+      summary: Create a customer
       tags:
         - Customers
       security:
@@ -133,6 +139,7 @@ paths:
       - $ref: "#/components/parameters/customerId"
     get:
       description: Retrieves an identified saved customer resource.
+      summary: Retrieve a customer
       tags:
         - Customers
       security:
@@ -149,6 +156,7 @@ paths:
           $ref: "#/components/responses/errorNotFound"
     put:
       description: Updates an identified saved customer resource.
+      summary: Update a customer
       tags:
         - Customers
       security:
@@ -174,6 +182,7 @@ paths:
       - $ref: "#/components/parameters/customerId"
     get: # FIXME Add details of sepa dd response.
       description: Lists all active payment instrument resources that are saved for an identified customer.
+      summary: Retrieve payment instruments
       tags:
         - Customers
       responses:
@@ -187,6 +196,7 @@ paths:
           $ref: "#/components/responses/errorNotFound"
     post: # FIXME Add option of for sepa dd pi
       description: Creates and activates a new payment instrument resource for an identified customer.
+      summary: Create a payment instrument
       tags:
         - Customers
       security:
@@ -213,6 +223,7 @@ paths:
       - $ref: "#/components/parameters/token"
     delete:
       description: Deactivates an identified card payment instrument resource for a customer.
+      summary: Deactivate a payment instrument
       tags:
         - Customers
       security:
@@ -253,6 +264,7 @@ paths:
   /me/transactions/history:
     get:
       description: Lists a history of all transactions associated with the merchant account.
+      summary: List transactions
       tags:
         - Transactions
       security:
@@ -287,6 +299,7 @@ paths:
          *  `id`
          *  `internal_id`
          *  `transaction_code`
+      summary: Retrieve a transaction
       tags:
         - Transactions
       security:
@@ -1261,21 +1274,21 @@ components:
     checkoutReference:
       name: checkout_reference
       in: query
-      description: Filters the list of checkout resources by the unique ID of the checkout.
+      description: Filters the list of returned resources by the unique ID of the checkout.
       required: false
       schema:
         type: string
     clientTransactionId:
       name: client_transaction_id
       in: query
-      description: Filters the list of checkout resources by client transaction ID. When you use this option, you also need to specify the merchant code in the `merchant_code` query parameter.
+      description: Filters the list of returned resources by client transaction ID. When you use this option, you also need to specify the merchant code in the `merchant_code` query parameter.
       required: false
       schema:
         type: string
     merchantCode:
       name: merchant_code
       in: query
-      description: Filters the list of checkout resources by merchant code. This parameter is required when you are using the `client_transaction_id` query parameter for filtering the results.
+      description: Filters the list of returned resources by merchant code. This parameter is required when you are using the `client_transaction_id` query parameter for filtering the results.
       required: false
       schema:
         type: string
