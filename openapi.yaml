@@ -66,7 +66,7 @@ paths:
           - payments
       responses:
         "200":
-          $ref: "#/components/responses/checkoutProcessResponse"
+          $ref: "#/components/responses/checkoutResponse"
         "401":
           $ref: "#/components/responses/errorNotAuthorized"
         "404":
@@ -540,7 +540,7 @@ components:
       discriminator:
         propertyName: type
         mapping:
-          token: "#/components/schemas/paymentInstrumentCard"
+          card: "#/components/schemas/paymentInstrumentCard"
           direct_debit: "#/components/schemas/paymentInstrumentSepa"
       properties:
         type:
@@ -1086,7 +1086,8 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/checkoutResponseExtended"
+            oneOf:
+              - $ref: "#/components/schemas/checkoutResponseExtended"
     checkoutListResponse:
       description: OK
       content:
