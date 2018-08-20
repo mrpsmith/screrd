@@ -1124,7 +1124,11 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/paymentInstrumentCard"
+            oneOf:
+              - $ref: "#/components/schemas/paymentInstrumentCard"
+              - $ref: "#/components/schemas/paymentInstrumentSepa"
+            discriminator:
+              propertyName: type
     transactionHistoryResponse:
       description: OK
       content:
