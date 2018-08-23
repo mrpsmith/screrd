@@ -514,8 +514,29 @@ components:
           description: State name or abbreviation from the address.
   # Payment instrument models
     PaymentInstrument:
+      allOf:
+        - type: object
+          description: Details of the payment instrument for a customer.
+          properties:
+            type: # TOFIX Possibly make `type` reusable for both card and direct_debit options and define separate models for them
+              type: string
+              description: Type of the payment instrument.
+              enum:
+                - card
+                - direct_debit
+                # TOFIX Uncomment the option below when the SEPA DD option is launched officially.
+          required:
+            - type
+        - oneOf:
+            - $ref: "#/components/schemas/PaymentInstrumentCard"
+            - $ref: "#/components/schemas/PaymentInstrumentDD"
+          discriminator:
+            propertyName: type
+            mapping:
+              card: "#/components/schemas/PaymentInstrumentCard"
+              direct_debit: "#/components/schemas/PaymentInstrumentDD"
+    PaymentInstrumentCard:
       type: object
-      description: Details of the payment instrument for a customer.
       properties:
         token:
           type: string
@@ -526,19 +547,11 @@ components:
           description: Indicates whether the payment instrument is active and can be used for payments. To deactivate it, send a `DELETE` request to the resource endpoint.
           readOnly: true
           default: true
-        type: # TOFIX Possibly make `type` reusable for both card and direct_debit options and define separate models for them
-          type: string
-          description: Type of the payment instrument.
-          enum:
-            - card
-            # TOFIX Uncomment the option below when the SEPA DD option is launched officially.
-            # - direct_debit
         card:
           $ref: "#/components/schemas/Card"
       required:
         - token
         - active
-        - type
         - card
     Card:
       type: object
@@ -612,6 +625,36 @@ components:
         - cvv
         - last_4_digits
         - type
+    PaymentInstrumentDD:
+      type: object
+      description: Details of the payment instrument for a customer.
+      properties:
+        mandate_reference:
+          type: string
+          description: Unique reference of the SEPA Direct Debit mandate.
+          readOnly: true
+        company_name:
+          type: string
+          description: Name of the company that holds the bank account associated with the IBAN (if applicable).
+        iban:
+          type: string
+          description: IBAN of the bank account for which the payment instrument is configured.
+          writeOnly: true
+          maxLength: 34
+          # pattern: '^[A-Z0-9]+$'
+        masked_iban:
+          type: string
+          description: Masked version of the IBAN for the payment instrument where only the first 2 characters and the last 5 characters from the full IBAN are visible and all other characters are replaced by asterisks (`*`).
+          readOnly: true
+        swift:
+          type: string
+          description: SWIFT code of the bank maintaining the account.
+          readOnly: true
+        # IMPROVEMENT Suggest to move this to the checkout model on analogy to the card option
+        is_recurring: # FIXME Create a new model and move this property there to accommodate the PUT request
+          type: boolean
+            description: Indicates whether the mandate is for a recurring payment.
+            default: false # FIXME Verify this
   # Transaction models
   # Error models
     Error:
