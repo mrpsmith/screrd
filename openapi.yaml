@@ -530,6 +530,7 @@ components:
         card:
           $ref: "#/components/schemas/Card"
       required:
+        - type
         - token
         - active
         - card
@@ -640,6 +641,14 @@ components:
               type: boolean
               description: Indicates whether the mandate is for a recurring payment.
               default: false # FIXME Verify this
+          required:
+            - mandate_reference
+            - iban
+            - masked_iban
+            - swift
+      required:
+        - type
+        - details
   # Transaction models
   # Error models
     Error:
