@@ -1246,7 +1246,7 @@ components:
               items:
                 type: array
                 items:
-                  $ref: "#/components/schemas/PaymentInstrument" # FIXME Fix the link
+                  $ref: "#/components/schemas/TransactionHistory" # FIXME Fix the link
               links:
                 type: array
                 items:
@@ -1256,7 +1256,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/PaymentInstrument" # FIXME Fix the link
+            $ref: "#/components/schemas/TransactionFull" # FIXME Fix the link
     ErrorBadRequest:
       description: Bad Request
       content:
