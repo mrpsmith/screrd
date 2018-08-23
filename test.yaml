@@ -518,24 +518,21 @@ components:
       properties:
         type:
           $ref: "#/components/schemas/PIType"
+        token:
+          type: string
+          description: Unique token identifying the saved payment card.
+          readOnly: true
+        active:
+          type: boolean
+          description: Indicates whether the payment instrument is active and can be used for payments. To deactivate it, send a `DELETE` request to the resource endpoint.
+          readOnly: true
+          default: true
         card:
-          type: object
-          properties:
-            token:
-              type: string
-              description: Unique token identifying the saved payment card.
-              readOnly: true
-            active:
-              type: boolean
-              description: Indicates whether the payment instrument is active and can be used for payments. To deactivate it, send a `DELETE` request to the resource endpoint.
-              readOnly: true
-              default: true
-            card:
-              $ref: "#/components/schemas/Card"
-          required:
-            - token
-            - active
-            - card
+          $ref: "#/components/schemas/Card"
+      required:
+        - token
+        - active
+        - card
     Card:
       type: object
       description: Details of the payment card.
