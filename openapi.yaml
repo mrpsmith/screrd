@@ -17,7 +17,7 @@ tags:
   - name: Customers
     description: View and manage saved customers and their payment instruments.
   - name: Transactions
-    description: View transactions.
+    description: View transactions and manage refunds.
 paths:
   /checkouts:
     get:
@@ -29,14 +29,14 @@ paths:
         - accessToken:
           - payments
       parameters:
-        - $ref: "#/components/parameters/checkoutReference"
-        - $ref: "#/components/parameters/clientTransactionId"
-        - $ref: "#/components/parameters/merchantCode"
+        - $ref: "#/components/parameters/CheckoutReference"
+        - $ref: "#/components/parameters/ClientTransactionID"
+        - $ref: "#/components/parameters/MerchantCode"
       responses:
         "200":
-          $ref: "#/components/responses/checkoutListResponse"
+          $ref: "#/components/responses/ResCheckoutList"
         "401":
-          $ref: "#/components/responses/errorNotAuthorized"
+          $ref: "#/components/responses/ErrorNotAuthorized"
     post:
       description: Create a new payment checkout resource.
       summary: Create a checkout
@@ -49,16 +49,16 @@ paths:
         $ref: "#/components/requestBodies/checkoutCreate"
       responses:
         "201":
-          $ref: "#/components/responses/checkoutCreateResponse"
+          $ref: "#/components/responses/ResCheckoutCreate"
         "400":
-          $ref: "#/components/responses/errorBadRequest"
+          $ref: "#/components/responses/ErrorBadRequest"
         "401":
-          $ref: "#/components/responses/errorNotAuthorized"
+          $ref: "#/components/responses/ErrorNotAuthorized"
         "409":
-          $ref: "#/components/responses/errorConflict"
+          $ref: "#/components/responses/ErrorConflict"
   /checkouts/{id}:
     parameters:
-      - $ref: "#/components/parameters/checkoutId"
+      - $ref: "#/components/parameters/CheckoutID"
     get:
       description: Retrieves an identified checkout resource.
       summary: Retrieve a checkout
@@ -69,11 +69,11 @@ paths:
           - payments
       responses:
         "200":
-          $ref: "#/components/responses/checkoutProcessResponse"
+          $ref: "#/components/responses/ResCheckoutProcess"
         "401":
-          $ref: "#/components/responses/errorNotAuthorized"
+          $ref: "#/components/responses/ErrorNotAuthorized"
         "404":
-          $ref: "#/components/responses/errorNotFound"
+          $ref: "#/components/responses/ErrorNotFound"
     put:
       description: Processes an identified checkout resource with the specified payment instrument.
       summary: Process a checkout
@@ -86,15 +86,15 @@ paths:
         $ref: "#/components/requestBodies/checkoutProcess"
       responses:
         "200":
-          $ref: "#/components/responses/checkoutProcessResponse"
+          $ref: "#/components/responses/ResCheckoutProcess"
         "400":
-          $ref: "#/components/responses/errorBadRequest"
+          $ref: "#/components/responses/ErrorBadRequest"
         "401":
-          $ref: "#/components/responses/errorNotAuthorized"
+          $ref: "#/components/responses/ErrorNotAuthorized"
         "404":
-          $ref: "#/components/responses/errorNotFound"
+          $ref: "#/components/responses/ErrorNotFound"
         "409":
-          $ref: "#/components/responses/errorConflict"
+          $ref: "#/components/responses/ErrorConflict"
     delete:
       description: Deactivates an identified checkout resource.
       summary: Deactivate a checkout
@@ -107,11 +107,11 @@ paths:
         "204":
           description: OK
         "401":
-          $ref: "#/components/responses/errorNotAuthorized"
+          $ref: "#/components/responses/ErrorNotAuthorized"
         "404":
-          $ref: "#/components/responses/errorNotFound"
+          $ref: "#/components/responses/ErrorNotFound"
         "409":
-          $ref: "#/components/responses/errorConflict"
+          $ref: "#/components/responses/ErrorConflict"
   /customers:
     post:
       description: Creates a new saved customer resource.
@@ -129,18 +129,18 @@ paths:
               $ref: "#/components/schemas/CustomerDetails"
       responses:
         "201":
-          $ref: "#/components/responses/customerResponse"
+          $ref: "#/components/responses/ResCustomer"
         "400":
-          $ref: "#/components/responses/errorBadRequest"
+          $ref: "#/components/responses/ErrorBadRequest"
         "401":
-          $ref: "#/components/responses/errorNotAuthorized"
+          $ref: "#/components/responses/ErrorNotAuthorized"
         "403":
-          $ref: "#/components/responses/errorForbidden"
+          $ref: "#/components/responses/ErrorForbidden"
         "409":
-          $ref: "#/components/responses/errorConflict"
+          $ref: "#/components/responses/ErrorConflict"
   /customers/{customer_id}:
     parameters:
-      - $ref: "#/components/parameters/customerId"
+      - $ref: "#/components/parameters/CustomerID"
     get:
       description: Retrieves an identified saved customer resource.
       summary: Retrieve a customer
@@ -151,13 +151,13 @@ paths:
           - payment_instruments
       responses:
         "200":
-          $ref: "#/components/responses/customerResponse"
+          $ref: "#/components/responses/ResCustomer"
         "401":
-          $ref: "#/components/responses/errorNotAuthorized"
+          $ref: "#/components/responses/ErrorNotAuthorized"
         "403":
-          $ref: "#/components/responses/errorForbidden"
+          $ref: "#/components/responses/ErrorForbidden"
         "404":
-          $ref: "#/components/responses/errorNotFound"
+          $ref: "#/components/responses/ErrorNotFound"
     put:
       description: Updates an identified saved customer resource.
       summary: Update a customer
@@ -174,20 +174,20 @@ paths:
               $ref: "#/components/schemas/PersonalDetails"
       responses:
         "200":
-          $ref: "#/components/responses/customerResponse"
+          $ref: "#/components/responses/ResCustomer"
         "400":
-          $ref: "#/components/responses/errorBadRequest"
+          $ref: "#/components/responses/ErrorBadRequest"
         "401":
-          $ref: "#/components/responses/errorNotAuthorized"
+          $ref: "#/components/responses/ErrorNotAuthorized"
         "403":
-          $ref: "#/components/responses/errorForbidden"
+          $ref: "#/components/responses/ErrorForbidden"
         "404":
-          $ref: "#/components/responses/errorNotFound"
+          $ref: "#/components/responses/ErrorNotFound"
         "409":
-          $ref: "#/components/responses/errorConflict"
+          $ref: "#/components/responses/ErrorConflict"
   /customers/{customer_id}/payment-instruments:
     parameters:
-      - $ref: "#/components/parameters/customerId"
+      - $ref: "#/components/parameters/CustomerID"
     get: # FIXME Add details of sepa dd response.
       description: Lists all active payment instrument resources that are saved for an identified customer.
       summary: Retrieve payment instruments
@@ -195,13 +195,13 @@ paths:
         - Customers
       responses:
         "200":
-          $ref: "#/components/responses/paymentInstrumentList"
+          $ref: "#/components/responses/ResPaymentInstrumentList"
         "401":
-          $ref: "#/components/responses/errorNotAuthorized"
+          $ref: "#/components/responses/ErrorNotAuthorized"
         "403":
-          $ref: "#/components/responses/errorForbidden"
+          $ref: "#/components/responses/ErrorForbidden"
         "404":
-          $ref: "#/components/responses/errorNotFound"
+          $ref: "#/components/responses/ErrorNotFound"
     post: # FIXME Add option of for sepa dd pi
       description: Creates and activates a new payment instrument resource for an identified customer.
       summary: Create a payment instrument
@@ -218,21 +218,21 @@ paths:
               $ref: "#/components/schemas/PaymentInstrument"
       responses:
         "200":
-          $ref: "#/components/responses/paymentInstrumentResponse"
+          $ref: "#/components/responses/ResPaymentInstrument"
         "400":
-          $ref: "#/components/responses/errorBadRequest"
+          $ref: "#/components/responses/ErrorBadRequest"
         "401":
-          $ref: "#/components/responses/errorNotAuthorized"
+          $ref: "#/components/responses/ErrorNotAuthorized"
         "403":
-          $ref: "#/components/responses/errorForbidden"
+          $ref: "#/components/responses/ErrorForbidden"
         "404":
-          $ref: "#/components/responses/errorNotFound"
+          $ref: "#/components/responses/ErrorNotFound"
         "409":
-          $ref: "#/components/responses/errorConflict"
+          $ref: "#/components/responses/ErrorConflict"
   /customers/{customer_id}/payment-instruments/{token}:
     parameters:
-      - $ref: "#/components/parameters/customerId"
-      - $ref: "#/components/parameters/token"
+      - $ref: "#/components/parameters/CustomerID"
+      - $ref: "#/components/parameters/Token"
     delete:
       description: Deactivates an identified card payment instrument resource for a customer.
       summary: Deactivate a payment instrument
@@ -245,11 +245,11 @@ paths:
         "204":
           description: OK
         "401":
-          $ref: "#/components/responses/errorNotAuthorized"
+          $ref: "#/components/responses/ErrorNotAuthorized"
         "403":
-          $ref: "#/components/responses/errorForbidden"
+          $ref: "#/components/responses/ErrorForbidden"
         "404":
-          $ref: "#/components/responses/errorNotFound"
+          $ref: "#/components/responses/ErrorNotFound"
   # # /customers/{customer_id}/payment-instruments/direct_debit:
     #   parameters:
     #     - $ref: "#/components/parameters/customerId"
@@ -282,12 +282,28 @@ paths:
       security:
         - accessToken:
           - transactions.history
-      # FIXME Add parameters/request body??
+      # FIXME Add parameters/request body???
+      parameters:
+        - $ref: "#/components/parameters/Order"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/TransactionCode"
+        - $ref: "#/components/parameters/UserID"
+        - $ref: "#/components/parameters/Users"
+        - $ref: "#/components/parameters/GeoCoordinates"
+        - $ref: "#/components/parameters/Readers"
+        - $ref: "#/components/parameters/Statuses"
+        - $ref: "#/components/parameters/PaymentTypes"
+        - $ref: "#/components/parameters/Types"
+        - $ref: "#/components/parameters/ChangesSince"
+        - $ref: "#/components/parameters/NewestTime"
+        - $ref: "#/components/parameters/NewestRef"
+        - $ref: "#/components/parameters/OldestTime"
+        - $ref: "#/components/parameters/OldestRef"
       responses:
         "200":
-          $ref: "#/components/responses/transactionHistoryResponse"
+          $ref: "#/components/responses/ResTransactionHistory"
         "401":
-          $ref: "#/components/responses/errorNotAuthorized"
+          $ref: "#/components/responses/ErrorNotAuthorized"
   /me/transactions:
     get:
       description: |
@@ -302,20 +318,38 @@ paths:
         - accessToken:
           - transactions.history
       parameters:
-        - $ref: "#/components/parameters/transactionId"
-        - $ref: "#/components/parameters/transactionInternalId"
-        - $ref: "#/components/parameters/transactionCode"
+        - $ref: "#/components/parameters/TransactionID"
+        - $ref: "#/components/parameters/TransactionInternalID"
+        - $ref: "#/components/parameters/TransactionCode"
         # - $ref: "#/components/parameters/foreignTransactionId"
         # - $ref: "#/components/parameters/clientTransactionIdTrx"
-        - $ref: "#/components/parameters/eventStatuses"
-        - $ref: "#/components/parameters/eventTypes"
+        - $ref: "#/components/parameters/EventStatuses"
+        - $ref: "#/components/parameters/EventTypes"
       responses:
         "200":
-          $ref: "#/components/responses/transactionResponse"
+          $ref: "#/components/responses/ResTransaction"
         "401":
-          $ref: "#/components/responses/errorNotAuthorized"
+          $ref: "#/components/responses/ErrorNotAuthorized"
         "404":
-          $ref: "#/components/responses/errorNotFound"
+          $ref: "#/components/responses/ErrorNotFound"
+  /me/refund/{tx_id}:
+    parameters:
+      - $ref: "#/components/parameters/TxID"
+    post:
+      description: Refunds the specified transaction, fully or partially.
+      summary: Refund a transaction
+      tags:
+        - Transactions
+      security:
+        - accessToken:
+          - payments
+      requestBody:
+          $ref: "#/components/requestBodies/refundRequest"
+      responses:
+        "204":
+          description: OK
+        "409":
+          $ref: "#/components/responses/ErrorConflict"
 security:
   - accessToken: []
 components:
@@ -378,7 +412,9 @@ components:
           readOnly: true
           uniqueItems: true
           items:
-            $ref: "#/components/schemas/Card" # FIXME Fix link
+            allOf:
+              - $ref: "#/components/schemas/TransactionMixinBase"
+              - $ref: "#/components/schemas/TransactionMixinCheckout"
       required:
         - checkout_reference
         - amount
@@ -393,7 +429,7 @@ components:
         - type: object
           # description:
           properties:
-            payment_type:
+            payment_type: # TOFIX Move definition to upper level and reuse in models to add discriminator
               type: string
               description: Type of the payment to use for processing the checkout.
               enum:
@@ -410,16 +446,17 @@ components:
           required:
             - payment_type
         - oneOf:
-            - $ref: "#/components/schemas/CheckoutProcessCard"
-            - $ref: "#/components/schemas/CheckoutProcessToken"
-    CheckoutProcessCard:
+            # TOFIX Uncomment `direct_debit` payment type and add a customer_id description and (with discriminator) on this level. Move the two card options one level down with a second `oneOf`.
+            - $ref: "#/components/schemas/CheckoutCard"
+            - $ref: "#/components/schemas/CheckoutToken"
+    CheckoutCard:
       type: object
       properties:
         card:
           $ref: "#/components/schemas/Card"
       required:
         - card
-    CheckoutProcessToken:
+    CheckoutToken:
       type: object
       properties:
         token:
@@ -431,7 +468,7 @@ components:
       required:
         - token
         - customer_id
-    CheckoutResponse:
+    CheckoutSuccess: # TOFIX Move this to the responses section?
       allOf:
         - $ref: "#/components/schemas/Checkout"
         - type: object
@@ -506,12 +543,6 @@ components:
         mapping:
           card: "#/components/schemas/PaymentInstrumentCard"
           direct_debit: "#/components/schemas/PaymentInstrumentDD"
-    PIType:
-      type: string
-      description: Type of the payment instrument.
-      enum:
-        - card
-        - direct_debit
     PaymentInstrumentCard:
       type: object
       description: Details of the payment card that is saved as a payment instrument.
@@ -579,6 +610,8 @@ components:
           type: string
           description: Last 4 digits from the payment card number.
           readOnly: true
+          minLength: 4
+          maxLength: 4
         type:
           type: string
           description: Issuing card network of the payment card.
@@ -606,6 +639,7 @@ components:
         - cvv
         - last_4_digits
         - type
+    # TOFIX Move `iban` and `company_name` as reusable parameters and use them in a separate model for updating the saved DD PI (where they are not required)
     PaymentInstrumentDD:
       type: object
       description: Details of the SEPA Direct Debit that is saved as a payment instrument for a customer.
@@ -620,14 +654,9 @@ components:
               description: Unique reference of the SEPA Direct Debit mandate.
               readOnly: true
             company_name:
-              type: string
-              description: Name of the company that holds the bank account associated with the IBAN (if applicable).
+              $ref: "#/components/schemas/PIDDCompany"
             iban:
-              type: string
-              description: IBAN of the bank account for which the payment instrument is configured.
-              writeOnly: true
-              maxLength: 34
-              # pattern: '^[A-Z0-9]+$'
+              $ref: "#/components/schemas/PIDDIban"
             masked_iban:
               type: string
               description: Masked version of the IBAN for the payment instrument where only the first 2 characters and the last 5 characters from the full IBAN are visible and all other characters are replaced by asterisks (`*`).
@@ -650,6 +679,362 @@ components:
         - type
         - details
   # Transaction models
+    TransactionMixinBase:
+      type: object
+      description: Details of the transaction.
+      properties:
+        id:
+          type: string
+          description: Unique ID of the transaction.
+        transaction_code:
+          type: string
+          description: Transaction code returned by the acquirer/processing entity after processing the transaction.
+        amount:
+          type: number
+          format: float
+          description: Total amount of the transaction.
+        currency:
+          $ref: "#/components/schemas/Currency"
+        timestamp:
+          type: string
+          format: date-time
+          description: Date and time of the creation of the transaction.
+        status:
+          type: string
+          description: Current status of the transaction.
+          enum:
+            - AUTH
+            - CANCELLED
+            - CAPTURED
+            - CC_CUSTOMER_ENTRY_CANCELLED
+            - CC_CUSTOMER_ENTRY_PENDING
+            - CHARGE_BACK
+            - CHARGEBACK_COLLECTED
+            - CHARGEBACK_REVERSAL
+            - DECLINED_ACQUIRER
+            - DECLINED_CARD
+            - DECLINED_INTERNAL
+            - MISMATCHED
+            - NON_COLLECTION
+            - NOT_SENT_TO_ACQUIRER
+            - PAID_OUT
+            - PAYOUT_CALCULATED
+            - PAYOUT_CREATED
+            - PAYOUT_FAILED
+            - RECONCILED
+            - REFUND_FAILED
+            - REFUND_PENDING
+            - REFUNDED
+            - REPORTED_FRAUD
+            - RETRIEVAL_REQUEST
+            - REVERSAL_FAILED
+            - REVERSED
+            - ROGER_THAT
+            - SETTLED
+            - SETTLED_FOR_DECLINED
+            - SYSTEM_ERROR
+            - TIMED_OUT
+            - UNKNOWN
+            - WITHHELD
+        payment_type:
+          type: string
+          description: Payment type used for the transaction.
+          enum:
+            - BALANCE
+            - BITCOIN
+            - BOLETO
+            - CASH
+            - ECOM
+            - POS
+            - RECURRING
+            - UNKNOWN
+        installments_count:
+          type: integer
+          description: Current number of installment payments.
+          minimum: 1
+    TransactionMixinCheckout:
+      type: object
+      properties:
+        merchant_code:
+          type: string
+          description: Unique code of the registered merchant to whom the payment is made.
+        vat_amount:
+          type: number
+          format: float
+          description: Amount of the applicable VAT (out of the total transaction amount).
+        tip_amount:
+          type: number
+          format: float
+          description: Amount of the tip (out of the total transaction amount).
+        entry_mode:  # FIXME check what are the possible values
+          type: string
+          description: Entry mode of the transaction. # FIXME
+          enum:
+            - BOLETO
+            - CHIP
+            - CONTACTLESS
+            - CONTACTLESS_MAGSTRIPE
+            - customer entry
+            - DIRECT_DEBIT
+            - MAGSTRIPE
+            - MAGSTRIPE_FALLBACK
+            - MANUAL_ENTRY
+            - MOTO
+            - NONE
+        auth_code:
+          type: string
+          description: Authorization code for the transaction sent by the payment card issuer or bank. Applicable only to card payments.
+        internal_id:
+          type: integer
+          description: Internal unique ID of the transaction on the SumUp platform.
+    TransactionMixinHistory:
+      type: object
+      properties:
+        product_summary:
+          type: string
+          description: Short description of the payment. The value is taken from the `description` property of the related checkout resource.
+        payouts_total: # FIXME reusable
+          type: integer
+          description: Total number of payouts to the registered user specified in the `user` property.
+        payouts_received: # FIXME reusable
+          type: integer
+          description: Number of payouts that are made to the registered user specified in the `user` property.
+        payout_plan: # FIXME reusable
+          type: string
+          description: Payout plan of the registered user at the time when the transaction was made. # FIXME
+          enum:
+            - SINGLE_PAYMENT
+            - TRUE_INSTALLMENT
+            - ACCELERATED_INSTALLMENT
+    TransactionHistory:
+      allOf:
+        - $ref: "#/components/schemas/TransactionMixinBase"
+        - $ref: "#/components/schemas/TransactionMixinHistory"
+        - type: object
+          properties:
+            transaction_id:
+              $ref: "#/components/schemas/TransactionID"
+            user:
+              $ref: "#/components/schemas/User"
+            type:
+              type: string
+              description: Type of the transaction for the registered user specified in the `user` property.
+              enum:
+                - PAYMENT
+                - REFUND
+                - CHARGE_BACK
+            card_type:
+              type: string
+              description: Issuing card network of the payment card used for the transaction.
+              enum:
+                - AMEX
+                - CUP
+                - DINERS
+                - DISCOVER
+                - ELO
+                - ELV
+                - HIPERCARD
+                - JCB
+                - MAESTRO
+                - MASTERCARD
+                - VISA
+                - VISA_ELECTRON
+                - VISA_VPAY
+                - UNKNOWN
+    TransactionFull:
+      allOf:
+        - $ref: "#/components/schemas/TransactionMixinBase"
+        - $ref: "#/components/schemas/TransactionMixinCheckout"
+        - $ref: "#/components/schemas/TransactionMixinHistory"
+        - type: object
+          properties:
+            username:
+              $ref: "#/components/schemas/User"
+            lat:
+              $ref: "#/components/schemas/Lat"
+            lon:
+              $ref: "#/components/schemas/Lon"
+            horizontal_accuracy:
+              $ref: "#/components/schemas/HorizontalAccuracy"
+            simple_payment_type:
+              type: string
+              description: FIXME
+              enum:
+                - CASH
+                - CC_SIGNATURE
+                - ELV
+                - CC_CUSTOMER_ENTERED
+                - MANUAL_ENTRY
+                - EMV
+                - MOTO
+            verification_method:
+              type: string
+              description: FIXME
+              enum:
+                - none
+                - signature
+                - offline pin
+                - online pin
+                - offline pin and signature
+                - confirmation code verified
+            card:
+              $ref: "#/components/schemas/Card"
+            local_time:
+              type: string
+              format: date-time
+              description: Local date and time of the creation of the transaction.
+            payout_type:
+              type: string
+              description: Payout method for the transaction amount.
+              enum:
+                - BANK_ACCOUNT
+                - PREPAID_CARD
+                - BALANCE
+            products:
+              type: array
+              description: List of products from the merchant's catalog for which the transaction serves as a payment.
+              items:
+                $ref: "#/components/schemas/Product"
+            vat_rates: # Define separate model
+              type: array
+              description: List of VAT rates applicable to the transaction.
+              items: {}
+            transaction_events:
+              type: array
+              description: List of transaction events related to the transaction.
+              items:
+                $ref: "#/components/schemas/TransactionEvent"
+            simple_status:
+              type: string
+              description: Status generated fromthe processing status and the latest transaction state.
+              enum:
+                - CANCEL_FAILED
+                - CANCELLED
+                - CHARGEBACK
+                - FAILED
+                - REFUND_FAILED
+                - REFUNDED
+                - SUCCESSFUL
+            links:
+              type: array
+              description: List of hyperlinks for accessing related resources.
+              uniqueItems: true
+              items:
+                anyOf:
+                  - $ref: "#/components/schemas/Link"
+                  - $ref: "#/components/schemas/LinkRefund"
+            events:
+              type: array
+              description: List of events related to the transaction.
+              uniqueItems: true
+              items:
+                $ref: "#/components/schemas/Event"
+            location:
+              type: object
+              description: Details of the payment location as received from the payment terminal.
+              properties:
+                lat:
+                  $ref: "#/components/schemas/Lat"
+                lon:
+                  $ref: "#/components/schemas/Lon"
+                horizontal_accuracy:
+                  $ref: "#/components/schemas/HorizontalAccuracy"
+            tax_enabled:
+              type: boolean
+              description: Indicates whether tax deduction is enabled for the transaction.
+    TransactionEvent:
+      type: object
+      description: FIXME
+      properties:
+        id:
+          $ref: "#/components/schemas/EventID"
+        event_type:
+          $ref: "#/components/schemas/EventType"
+        status:
+          $ref: "#/components/schemas/EventStatus"
+        amount:
+          $ref: "#/components/schemas/AmountEvent"
+        due_date:
+          type: string
+          format: date
+          description: Date when the transaction event is due to occur.
+        date:
+          type: string
+          format: date
+          description: Date when the transaction event occurred.
+        installment_number:
+          type: integer
+          description: The number of the installment that is paid. Applicable only payout events, i.e. `event_type = PAYOUT`.
+        timestamp:
+          $ref: "#/components/schemas/TimestampEvent"
+    Event:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/EventID"
+        transaction_id:
+          $ref: "#/components/schemas/TransactionID"
+        type:
+          $ref: "#/components/schemas/EventType"
+        status:
+          $ref: "#/components/schemas/EventStatus"
+        amount:
+          $ref: "#/components/schemas/AmountEvent"
+        timestamp:
+          $ref: "#/components/schemas/TimestampEvent"
+        fee_amount:
+          type: number
+          format: float
+          description: Amount of the fee related to the event.
+        installment_number:
+          type: integer
+          description: Consequtive number of the installment.
+        deducted_amount:
+          type: number
+          format: float
+          description: Amount deducted for the event.
+        deducted_fee_amount:
+          type: number
+          format: float
+          description: Fee amount deducted for the event. # FIXME
+    Product:
+      type: object
+      description: Details of the product for which the payment is made.
+      properties:
+        name:
+          type: string
+          description: Name of the product from the merchant's catalog.
+        price:
+          type: number
+          format: float
+          description: Price of the product without VAT.
+        vat_rate:
+          type: number
+          format: float
+          description: VAT rate applicable to the product.
+        single_vat_amount:
+          type: number
+          format: float
+          description: Amount of the VAT for a single product item (calculated as the product of `price` and `vat_rate`, i.e. `single_vat_amount = price * vat_rate`).
+        price_with_vat:
+          type: number
+          format: float
+          description: Price of a single product item with VAT.
+        vat_amount:
+          type: number
+          format: float
+          description: Total VAT amount for the purchase (calculated as the product of `single_vat_amount` and `quantity`, i.e. `vat_amount = single_vat_amount * quantity`).
+        quantity:
+          type: number
+          description: Number of product items for the purchase.
+        total_price:
+          type: number
+          format: float
+          description: Total price of the product items without VAT (calculated as the product of `price` and `quantity`, i.e. `total_price = price * quantity`).
+        total_with_vat:
+          type: number
+          format: float
+          description: Total price of the product items including VAT (calculated as the product of `price_with_vat` and `quantity`, i.e. `total_with_vat = price_with_vat * quantity`).
   # Error models
     Error:
       type: object
@@ -692,6 +1077,21 @@ components:
           type: string
           description: HTTP status code for the error.
   # Misc properties and models reused in other models
+    PIType:
+      type: string
+      description: Type of the payment instrument.
+      enum:
+        - card
+        - direct_debit
+    PIDDIban:
+      type: string
+      description: IBAN of the bank account for which the payment instrument is configured.
+      writeOnly: true
+      maxLength: 34
+      # pattern: '^[A-Z0-9]+$'
+    PIDDCompany:
+      type: string
+      description: Name of the company that holds the bank account associated with the IBAN (if applicable).
     Currency:
       type: string
       description: Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Possible values are only ones from the list of curently supported currencies.
@@ -757,34 +1157,69 @@ components:
               type: number
               format: float
               description: Maximum allowed amount for the refund.
+    EventID:
+      type: integer
+      description: Unique ID of the transaction event.
+    TransactionID:
+      type: string
+      description:  Unique ID of the transaction.
+    User:
+      type: string
+      format: email
+      description: Email address of the registered user (merchant) to whom the payment is made.
+    AmountEvent:
+      type: number
+      format: float
+      description: Amount of the event.
+    TimestampEvent:
+      type: string
+      format: date-time
+      description: Date and time of the transaction event.
+    EventType:
+      type: string
+      description: Type of the transaction event.
+      enum:
+        - PAYOUT
+        - CHARGE_BACK
+        - REFUND
+        #- PAYOUT_DEDUCTION
+    EventStatus:
+      type: string
+      description: Status of the transaction event.
+      enum:
+        - PENDING
+        - SCHEDULED
+        - FAILED
+        - REFUNDED
+        - SUCCESSFUL
   responses:
-    checkoutCreateResponse:
+    ResCheckoutCreate:
       description: OK
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Checkout"
-    checkoutProcessResponse:
+    ResCheckoutProcess:
       description: OK
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/CheckoutResponse"
-    checkoutListResponse:
+            $ref: "#/components/schemas/CheckoutSuccess"
+    ResCheckoutList:
       description: OK
       content:
         application/json:
           schema:
             type: array
             items:
-              $ref: "#/components/schemas/CheckoutResponse"
-    customerResponse:
+              $ref: "#/components/schemas/CheckoutSuccess"
+    ResCustomer:
       description: Details of the saved customer.
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/CustomerDetails"
-    paymentInstrumentList:
+    ResPaymentInstrumentList:
       description: OK
       content:
         application/json:
@@ -793,13 +1228,13 @@ components:
             maxItems: 4
             items:
               $ref: "#/components/schemas/PaymentInstrument"
-    paymentInstrumentResponse:
+    ResPaymentInstrument:
       description: OK
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/PaymentInstrument"
-    transactionHistoryResponse:
+    ResTransactionHistory:
       description: OK
       content:
         application/json:
@@ -816,13 +1251,13 @@ components:
                 type: array
                 items:
                   $ref: "#/components/schemas/Link"
-    transactionResponse:
+    ResTransaction:
       description: OK
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/PaymentInstrument" # FIXME Fix the link
-    errorBadRequest:
+    ErrorBadRequest:
       description: Bad Request
       content:
         application/json:
@@ -835,7 +1270,7 @@ components:
             invalidParameter:
               description: A required parameters has an invalid value.
               value: {"message":"Validation error","error_code":"INVALID","param":"card.expiry_year"}
-    errorNotAuthorized:
+    ErrorNotAuthorized:
       description: Unauthorized
       content:
         application/json:
@@ -851,7 +1286,7 @@ components:
             authFailure:
               description: Your authorization request failed due to invalid parameters.
               value: {"error_message":"authentication failed","error_code":"NOT_AUTHORIZED"}
-    errorForbidden:
+    ErrorForbidden:
       description: Forbidden
       content:
         application/json:
@@ -860,7 +1295,7 @@ components:
           example:
             description: You do not have a required scopes for making this request.
             value: {"error_message":"request_not_allowed","error_code":"FORBIDDEN","status_code":403}
-    errorNotFound:
+    ErrorNotFound:
       description: Not Found
       content:
         application/json:
@@ -869,7 +1304,7 @@ components:
           example:
             description: An identified resource is not found on the server.
             value: {"error_code":"NOT_FOUND","message":"Resource not found"}
-    errorConflict:
+    ErrorConflict:
       description: Conflict
       content:
         application/json:
@@ -889,63 +1324,70 @@ components:
               description: Maximum number of payment instruments per customer is reached. Currently, the maximum allowed number is 4.
               value: {"error_code":"MAX_INSTRUMENT_COUNT","message":"Max number of payment instruments on file reached"}
   parameters:
-    checkoutId:
+    TxID:
+      name: tx_id
+      in: path
+      required: true
+      description: Unique ID of the transaction .
+      schema:
+        type: string
+    CheckoutID:
       name: id
       in: path
       required: true
       description: Unique ID of the checkout resource.
       schema:
         type: string
-    customerId:
+    CustomerID:
       name: customer_id
       in: path
       required: true
       description: Unique ID of the customer resource.
       schema:
         type: string
-    token:
+    Token:
       name: token
       in: path
       required: true
       description: Unique token identifying the card saved as a payment instrument resource.
       schema:
         type: string
-    checkoutReference:
+    CheckoutReference:
       name: checkout_reference
       in: query
       description: Filters the list of checkout resources by the unique ID of the checkout.
       required: false
       schema:
         type: string
-    clientTransactionId:
+    ClientTransactionID:
       name: client_transaction_id
       in: query
       description: Filters the list of checkout resources by client transaction ID. When you use this option, you also need to specify the merchant code in the `merchant_code` query parameter.
       required: false
       schema:
         type: string
-    merchantCode:
+    MerchantCode:
       name: merchant_code
       in: query
       description: Filters the list of checkout resources by merchant code. This parameter is required when you are using the `client_transaction_id` query parameter for filtering the results.
       required: false
       schema:
         type: string
-    transactionId:
+    TransactionID:
       name: id
       in: query
       description: Retrieves the transaction resource with the specified transaction ID (the `id` parameter in the transaction resource).
       required: false
       schema:
         type: string
-    transactionInternalId:
+    TransactionInternalID:
       name: internal_id
       in: query
       description: Retrieves the transaction resource with the specified internal transaction ID (the `internal_id` parameter in the transaction resource).
       required: false
       schema:
         type: string
-    transactionCode:
+    TransactionCode:
       name: transaction_code
       in: query
       description: Retrieves the transaction resource with the specified transaction ID (the `transaction_code` parameter in the transaction resource).
@@ -966,7 +1408,7 @@ components:
       #   required:
       #   schema:
       #     type: string
-    eventStatuses:
+    EventStatuses:
       name: event_statuses
       in: query
       description: Filters the returned transaction events in the transaction resource by the speficied transaction event statuses.
@@ -978,7 +1420,7 @@ components:
           enum: # FIXME List all possible values
             - FAILED
             - SUCCESSFUL
-    eventTypes:
+    EventTypes:
       name: event_types
       in: query
       description: Filters the returned transaction events in the transaction resource by specified transaction event types.
@@ -992,6 +1434,146 @@ components:
             - REFUND
             - CHARGE_BACK
             #- PAYOUT_DEDUCTION
+    Order:
+      name: order
+      in: query
+      description: Specifies the order in which the returned results are displayed.
+      schema:
+        type: string
+        enum:
+          - ascending
+          - descending
+        default:
+          - ascending
+    Limit:
+      name: limit
+      in: query
+      description: Specifies the maximum number of results returned per page.
+      schema:
+        type: integer
+    UserID:
+      name: user_id
+      in: query
+      description: |
+        Filters the results and returns only transaction resources associated with the specified user. The user can be identified via one of the following parameters:
+          * email
+          * masked merchant ID
+          * original user ID
+
+        If you do not specify user identification, the response contains transaction resources associated with the currently authenticated user account.
+      required: false
+      schema:
+        type: string
+    Users:
+      name: users
+      in: query
+      description: Filters the returned results by user email.
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          format: email
+    GeoCoordinates:
+      name: geo_coordinates
+      in: query
+      description: |
+        Filters the results by the geographical coordinates of the location where the transaction is made (as retrieved from the terminal device) and returns only results that fall within the specified rectangular area. The accepted format is a comma-separated list of coordinate points that form a rectangle defined by the following parameters:
+          * `southwest_lng` (for the longitude value of the southwestern edge of the rectangle)
+          * `southwest_lat` (for the latitude value of the southwestern edge of the rectangle)
+          * `northeast_lng` (for the longitude value of the northeastern edge of the rectangle)
+          * `northeast_lat` (for the latitude value of the northeastern edge of the rectangle)
+      required: false
+      schema:
+        type: string
+    Readers:
+      name: readers
+      in: query
+      description: Filters the returned results by the specified list of serial numbers of the terminal readers used for the transactions.
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+    Statuses:
+      name: statuses
+      in: query
+      description: Filters the returned results by the specified list of final statuses of the transactions.
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - SUCCESSFUL
+            - CANCELLED
+            - FAILED
+    PaymentTypes:
+      name: payment_types
+      in: query
+      description: Filters the returned results by the specified list of payment types used for the transactions.
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - CASH
+            - POS
+            - ECOM
+            - BITCOIN
+            - BALANCE
+    Types:
+      name: types
+      in: query
+      description: Filters the returned results by the specified list of transaction types.
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+            - PAYMENT
+            - REFUND
+            - CHARGE_BACK
+    ChangesSince:
+      name: changes_since
+      in: query
+      description: Filters the results by the latest modification time of resources and returns only transactions that are modified after the specified timestamp (in ISO8601 format).
+      required: false
+      schema:
+        type: string
+        format: date-time
+    NewestTime:
+      name: newest_time
+      in: query
+      description: Filters the results by the creation time of resources and returns only transactions that are created before the specified timestamp (in ISO8601 format).
+      required: false
+      schema:
+        type: string
+        format: date-time
+    NewestRef:
+      name: newest_ref
+      in: query
+      description: Filters the results by the reference ID of transaciton events and returns only transactions with events whose IDs are smaller than the specified value. This parameters supersedes the `newestTime` parameter (if both are provided in the request).
+      required: false
+      schema:
+        type: string
+    OldestTime:
+      name: oldest_time
+      in: query
+      description: Filters the results by the creation time of resources and returns only transactions that are created after the specified timestamp (in ISO8601 format).
+      required: false
+      schema:
+        type: string
+        format: date-time
+    OldestRef:
+      name: oldest_ref
+      in: query
+      description: Filters the results by the reference ID of transaciton events and returns only transactions with events whose IDs are greater than the specified value. This parameters supersedes the `oldestTime` parameter (if both are provided in the request).
+      required: false
+      schema:
+        type: string
   requestBodies:
     checkoutCreate:
       description: Details of the payment checkout.
@@ -1023,12 +1605,17 @@ components:
       #     application/json:
       #       schema:
       #         - $ref: "#/components/schemas/sepaDetailsFull"
-      # sepaDdUpdateRequest:
-      #   description: Details for updating an existing SEPA Direct Debit mandate as a payment instrument.
-      #   content:
-      #     application/json:
-      #       schema:
-      #         - $ref: "#/components/schemas/sepaDetails"
+    sepaDdUpdateRequest:
+      description: Details for updating an existing SEPA Direct Debit mandate as a payment instrument.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              iban:
+                $ref: "#/components/schemas/PIDDIban"
+              company_name:
+                $ref: "#/components/schemas/PIDDCompany"
       # customerDdRequest:
       #   # for sepaDD, the following fields are required:
       #   required:
