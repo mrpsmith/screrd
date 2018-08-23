@@ -282,23 +282,7 @@ paths:
       security:
         - accessToken:
           - transactions.history
-      # FIXME Add parameters/request body???
-      parameters:
-        - $ref: "#/components/parameters/order"
-        - $ref: "#/components/parameters/limit"
-        - $ref: "#/components/parameters/transactionCode"
-        - $ref: "#/components/parameters/userId"
-        - $ref: "#/components/parameters/users"
-        - $ref: "#/components/parameters/geoCoordinates"
-        - $ref: "#/components/parameters/readers"
-        - $ref: "#/components/parameters/statuses"
-        - $ref: "#/components/parameters/paymentTypes"
-        - $ref: "#/components/parameters/types"
-        - $ref: "#/components/parameters/changesSince"
-        - $ref: "#/components/parameters/newestTime"
-        - $ref: "#/components/parameters/newestRef"
-        - $ref: "#/components/parameters/oldestTime"
-        - $ref: "#/components/parameters/oldestRef"
+      # FIXME Add parameters/request body??
       responses:
         "200":
           $ref: "#/components/responses/transactionHistoryResponse"
@@ -394,7 +378,7 @@ components:
           readOnly: true
           uniqueItems: true
           items:
-            $ref: "#/components/schemas/TransactionBaseExtended" # FIXME Fix link
+            $ref: "#/components/schemas/Card" # FIXME Fix link
       required:
         - checkout_reference
         - amount
@@ -653,8 +637,8 @@ components:
         # IMPROVEMENT Suggest to move this to the checkout model on analogy to the card option
         is_recurring: # FIXME Create a new model and move this property there to accommodate the PUT request
           type: boolean
-            description: Indicates whether the mandate is for a recurring payment.
-            default: false # FIXME Verify this
+          description: Indicates whether the mandate is for a recurring payment.
+          default: false # FIXME Verify this
   # Transaction models
   # Error models
     Error:
