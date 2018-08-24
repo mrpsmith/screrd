@@ -38,7 +38,7 @@ paths:
         "401":
           $ref: "#/components/responses/ErrorNotAuthorized"
     post:
-      description: Create a new payment checkout resource.
+      description: Create a payment checkout resource.
       summary: Create a checkout
       tags:
         - Checkouts
@@ -1352,7 +1352,7 @@ components:
           schema:
             $ref: "#/components/schemas/Error"
           example:
-              description: A resource with the specified parameters already exists on the server.
+              description: The state of the specified resource does not permit the requested operation.
               value: {"error_code":"CHECKOUT_PROCESSED","message":"Checkout is already processed"}
     ErrorConflictCS:
       description: Conflict
@@ -1379,7 +1379,7 @@ components:
           schema:
             $ref: "#/components/schemas/Error"
           example:
-            description: The transaction is not refundable in its current state.
+            description: The state of the specified resource does not permit the requested operation.
             value: {"error_code":"CONFLICT","message":"The transaction is not refundable in its current state"}
   parameters:
     TxID:
