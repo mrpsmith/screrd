@@ -433,47 +433,28 @@ components:
         - transactions
     CheckoutProcess:
       oneOf:
-        - $ref: "#/components/schemas/CheckoutCardToken"
-        - $ref: "#/components/schemas/CheckoutSDD"
+        - $ref: "#/components/schemas/CheckoutCard"
+        - $ref: "#/components/schemas/CheckoutSEPA"
       discriminator:
         propertyName: payment_type
         maping:
-          direct_debit: "#/components/schemas/CheckoutSDD"
-          card: "#/components/schemas/CheckoutCardToken"
-    CheckoutCardToken:
-      oneOf:
-        - $ref: "#/components/schemas/CheckoutCard"
-        - $ref: "#/components/schemas/CheckoutToken"
-    InstallmentsCO:
-      type: integer
-      description: Number of installments for recurring payments. #FIXME
-      minimum: 1
-      example: 1
+          direct_debit: "#/components/schemas/CheckoutSEPA"
+          card: "#/components/schemas/CheckoutCard"
     CheckoutCard:
       type: object
       properties:
         payment_type:
           type: string
-          description: Type of the payment instrument to use for processing the checkout.
+          description: Type of the payment instrument to use for processing the checkout. When the value is `card`, either the `card` object or both the `token` and `customer_id` properties are required.
           enum:
             - card
         installments:
-          $ref: "#/components/schemas/InstallmentsCO"
+          type: integer
+          description: Number of installments for recurring payments. #FIXME
+          minimum: 1
+          example: 1
         card:
           $ref: "#/components/schemas/Card"
-      required:
-        - payment_type
-        - card
-    CheckoutToken:
-      type: object
-      properties:
-        payment_type:
-          type: string
-          description: Type of the payment instrument to use for processing the checkout.
-          enum:
-            - card
-        installments:
-          $ref: "#/components/schemas/InstallmentsCO"
         token:
           type: string
           description: Unique token identifying the saved payment card for the customer.
@@ -481,9 +462,10 @@ components:
           $ref: "#/components/schemas/CustomerID"
       required:
         - payment_type
-        - token
-        - customer_id
-    CheckoutSDD:
+      # - card
+      # - token
+      # - customer_id
+    CheckoutSEPA:
       type: object
       properties:
         payment_type:
