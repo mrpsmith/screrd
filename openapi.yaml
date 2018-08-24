@@ -562,8 +562,14 @@ components:
       type: object
       description: Details of the payment card that is saved as a payment instrument.
       properties:
+        # type:
+        #   $ref: "#/components/schemas/PIType"
         type:
-          $ref: "#/components/schemas/PIType"
+          type: string
+          description: Type of the payment instrument.
+          enum:
+            - card
+            # - direct_debit
         token:
           type: string
           description: Unique token identifying the saved payment card.
@@ -660,15 +666,19 @@ components:
       description: Details of the SEPA Direct Debit to modify in the saved payment instrument.
       properties:
         company_name:
-          $ref: "#/components/schemas/PIDDCompany"
+          $ref: "#/components/schemas/DDCompany"
         iban:
-          $ref: "#/components/schemas/PIDDIban"
+          $ref: "#/components/schemas/DDIban"
     PaymentInstrumentDD:
       type: object
       description: Details of the SEPA Direct Debit that is saved as a payment instrument for a customer.
       properties:
         type:
-          $ref: "#/components/schemas/PIType"
+          type: string
+          description: Type of the payment instrument.
+          enum:
+            # - card
+            - direct_debit
         details:
           type: object
           properties:
@@ -677,9 +687,9 @@ components:
               description: Unique reference of the SEPA Direct Debit mandate.
               readOnly: true
             company_name:
-              $ref: "#/components/schemas/PIDDCompany"
+              $ref: "#/components/schemas/DDCompany"
             iban:
-              $ref: "#/components/schemas/PIDDIban"
+              $ref: "#/components/schemas/DDIban"
             masked_iban:
               type: string
               description: Masked version of the IBAN for the payment instrument where only the first 2 characters and the last 5 characters from the full IBAN are visible and all other characters are replaced by asterisks (`*`).
@@ -1106,13 +1116,13 @@ components:
       enum:
         - card
         - direct_debit
-    PIDDIban:
+    DDIban:
       type: string
       description: IBAN of the bank account used for the Direct Debit mandate.
       writeOnly: true
       maxLength: 34
       # pattern: '^[A-Z0-9]+$'
-    PIDDCompany:
+    DDCompany:
       type: string
       description: Name of the company that holds the bank account associated with the IBAN (if applicable).
     Currency:
@@ -1636,9 +1646,9 @@ components:
             type: object
             properties:
               iban:
-                $ref: "#/components/schemas/PIDDIban"
+                $ref: "#/components/schemas/DDIban"
               company_name:
-                $ref: "#/components/schemas/PIDDCompany"
+                $ref: "#/components/schemas/DDCompany"
       # customerDdRequest:
       #   # for sepaDD, the following fields are required:
       #   required:
@@ -1684,12 +1694,12 @@ components:
           # authorizationUrl: https://api.sumup.com/authorize
           tokenUrl: https://api.sumup.com/token
           scopes:
-            payments: Make payments by creating and processing checkouts.
+            # payments: Make payments by creating and processing checkouts.
             transactions.history: View your transactions and transaction history.
             # user.profile_readonly: View your user profile details.
             user.app-settings: View and manage the settings of your client application.
-            balance: View and manage your payout balance.
-            payments_instruments: Manage customers and their payment instruments.
+            # balance: View and manage your payout balance.
+            # payments_instruments: Manage customers and their payment instruments.
           # # user.profile: View and manage your user profile
             # user.payout-settings: View and manage your payout settings
             # user.subaccounts: View and manage the user profile details of your employees
