@@ -433,14 +433,14 @@ components:
     CheckoutProcess:
       oneOf:
         - $ref: "#/components/schemas/CheckoutSEPA"
-        - $ref: "#/components/schemas/CheckoutCard"
+        - $ref: "#/components/schemas/CheckoutCardToken"
       # - $ref: "#/components/schemas/CheckoutToken"
       discriminator:
         propertyName: payment_type
         mapping:
           direct_debit: "#/components/schemas/CheckoutSEPA"
-          card: "#/components/schemas/CheckoutCard"
-    CheckoutCard:
+          card: "#/components/schemas/CheckoutCardToken"
+    CheckoutCardToken:
       type: object
       properties:
         payment_type:
@@ -454,6 +454,8 @@ components:
           description: Unique token identifying the saved payment card for the customer.
         customer_id:
           $ref: "#/components/schemas/CustomerID"
+      required:
+        - payment_type
   # CheckoutCard:
   #   type: object
   #   properties:
