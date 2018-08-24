@@ -433,16 +433,17 @@ components:
     CheckoutProcess:
       oneOf:
         - $ref: "#/components/schemas/CheckoutSEPA"
-        - $ref: "#/components/schemas/CheckoutCard"
-        - $ref: "#/components/schemas/CheckoutToken"
+        - $ref: "#/components/schemas/CheckoutCT"
+        # - $ref: "#/components/schemas/CheckoutToken"
       discriminator:
         propertyName: payment_type
         mapping:
           direct_debit: "#/components/schemas/CheckoutSEPA"
-          card:
-            oneOf:
-              - "#/components/schemas/CheckoutCard"
-              - "#/components/schemas/CheckoutToken"
+          card: "#/components/schemas/CheckoutCT"
+    CheckoutCT:
+      oneOf:
+        - $ref: "#/components/schemas/CheckoutCard"
+        - $ref: "#/components/schemas/CheckoutToken"
     CheckoutCard:
       type: object
       properties:
@@ -1737,3 +1738,4 @@ components:
           # referrals.payout:
 # links:
 # callbacks:
+
