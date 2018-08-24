@@ -193,6 +193,10 @@ paths:
       summary: Retrieve payment instruments
       tags:
         - Customers
+      security:
+        - accessToken:
+          - payment_instruments
+          - sepa_dd
       responses:
         "200":
           $ref: "#/components/responses/ResPaymentInstrumentList"
@@ -250,29 +254,36 @@ paths:
           $ref: "#/components/responses/ErrorForbidden"
         "404":
           $ref: "#/components/responses/ErrorNotFound"
-  # # /customers/{customer_id}/payment-instruments/direct_debit:
-    #   parameters:
-    #     - $ref: "#/components/parameters/customerId"
-    #   put:
-    #     description:
-    #     tags:
-    #       - Customers
-    #     security:
-    #       - accessToken:
-    #         - payment_instruments
-    #     requestBody:
-    #     responses:
-    #       "200":
-    #         $ref: "#/components/responses/FIXME"
-    #       "400":
-    #         $ref: "#/components/responses/errorBadRequest"
-    #       "401":
-    #         $ref: "#/components/responses/errorNotAuthorized"
-    #       "403":
-    #         $ref: "#/components/responses/errorForbidden"
-    #       "404":
-    #         $ref: "#/components/responses/errorNotFound"
-    #   delete:
+  /customers/{customer_id}/payment-instruments/direct_debit:
+    parameters:
+      - $ref: "#/components/parameters/CustomerID"
+    put:
+      description: Updates a saved SEPA Direct Debit mandate for a customer.
+      summary: Update a SEPA mandate
+      tags:
+        - Customers
+      security:
+        - accessToken:
+          - payment_instruments
+          - sepa_dd
+      requestBody:
+        description: Details of the SEPA Direct Debit to modify in the saved payment instrument.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentInstrumentDDUpdate"
+      responses:
+        "200":
+          $ref: "#/components/responses/FIXME"
+        "400":
+          $ref: "#/components/responses/errorBadRequest"
+        "401":
+          $ref: "#/components/responses/errorNotAuthorized"
+        "403":
+          $ref: "#/components/responses/errorForbidden"
+        "404":
+          $ref: "#/components/responses/errorNotFound"
+    delete:
   /me/transactions/history:
     get:
       description: Lists a history of all transactions associated with the merchant account.
@@ -484,7 +495,7 @@ components:
   # Customer models
     CustomerDetails:
       type: object
-      description: Details of the customer.
+      description: Details of the customer. For customers with saved SEPA Direct Debit mandates, all properties from the embedded objects are required.
       required:
         - customer_id
       properties:
@@ -495,7 +506,7 @@ components:
           $ref: "#/components/schemas/PersonalDetails"
     PersonalDetails:
       type: object
-      description: Personal details for the customer. # For SEPA Direct Debit mandates, all properties are required.
+      description: Personal details for the customer. For SEPA Direct Debit mandates, all properties are required.
       properties:
         first_name:
           type: string
@@ -513,7 +524,7 @@ components:
           $ref: "#/components/schemas/Address"
     Address:
       type: object
-      description: Details of the registered address. # For SEPA Direct Debit mandates, all properties are required.
+      description: Details of the registered address. For SEPA Direct Debit mandates, all properties are required.
       properties:
         city:
           type: string
@@ -640,6 +651,14 @@ components:
         - last_4_digits
         - type
     # TOFIX Move `iban` and `company_name` as reusable parameters and use them in a separate model for updating the saved DD PI (where they are not required)
+    PaymentInstrumentDDUpdate:
+      type: object
+      description: Details of the SEPA Direct Debit to modify in the saved payment instrument.
+      properties:
+        company_name:
+          $ref: "#/components/schemas/PIDDCompany"
+        iban:
+          $ref: "#/components/schemas/PIDDIban"
     PaymentInstrumentDD:
       type: object
       description: Details of the SEPA Direct Debit that is saved as a payment instrument for a customer.
@@ -1085,7 +1104,7 @@ components:
         - direct_debit
     PIDDIban:
       type: string
-      description: IBAN of the bank account for which the payment instrument is configured.
+      description: IBAN of the bank account used for the Direct Debit mandate.
       writeOnly: true
       maxLength: 34
       # pattern: '^[A-Z0-9]+$'
