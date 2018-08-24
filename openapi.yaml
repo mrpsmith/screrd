@@ -471,10 +471,11 @@ components:
               $ref: "#/components/schemas/InstallmentsCO"
           required:
             - payment_type
-        - oneOf:
+        - $ref: "#/components/schemas/CheckoutCard"
+        # oneOf:
             # TOFIX Uncomment `direct_debit` payment type and add a customer_id description and (with discriminator) on this level. Move the two card options one level down with a second `oneOf`.
-            - $ref: "#/components/schemas/CheckoutCard"
-            - $ref: "#/components/schemas/CheckoutToken"
+            # - $ref: "#/components/schemas/CheckoutCard"
+            # - $ref: "#/components/schemas/CheckoutToken"
     CheckoutCard:
       type: object
       properties:
