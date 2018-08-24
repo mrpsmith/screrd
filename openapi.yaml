@@ -432,28 +432,6 @@ components:
         - date
         - transactions
     CheckoutProcess:
-      oneOf:
-        - $ref: "#/components/schemas/CheckoutProcessCard"
-        - $ref: "#/components/schemas/CheckoutProcessSDD"
-      discriminator:
-        propertyName: payment_type
-        mapping:
-          card: "#/components/schemas/CheckoutProcessCard"
-          direct_debit: "#/components/schemas/CheckoutProcessSDD"
-    CheckoutProcessSDD:
-      type: object
-      properties:
-        payment_type:
-          type: string
-          description: Type of the payment to use for processing the checkout.
-          enum:
-            - direct_debit
-        customer_id:
-          $ref: "#/components/schemas/CustomerID"
-      required:
-        - payment_type
-        - customer_id
-    CheckoutProcessCard:
       allOf:
         - type: object
           # description:
@@ -463,19 +441,30 @@ components:
               description: Type of the payment to use for processing the checkout.
               enum:
                 - card
-                # - direct_debit
+                - direct_debit
                 # - balance
                 # - moto
                 # - boleto
             installments:
-              $ref: "#/components/schemas/InstallmentsCO"
+              type: integer
+              description: Number of installments for recurring payments. #FIXME
+              minimum: 1
+              example: 1
           required:
             - payment_type
-        - $ref: "#/components/schemas/CheckoutCard"
-        # oneOf:
+        - oneOf:
             # TOFIX Uncomment `direct_debit` payment type and add a customer_id description and (with discriminator) on this level. Move the two card options one level down with a second `oneOf`.
-            # - $ref: "#/components/schemas/CheckoutCard"
-            # - $ref: "#/components/schemas/CheckoutToken"
+            - $ref: "#/components/schemas/CheckoutCard"
+            - $ref: "#/components/schemas/CheckoutToken"
+            - $ref: "#/components/schemas/CheckoutSDD"
+          discriminator:
+            propertyName: payment_type
+            maping:
+              card: 
+                oneOf:
+                  - "#/components/schemas/CheckoutCard"
+                  - "#/components/schemas/CheckoutToken"
+              direct_debit: "#/components/schemas/CheckoutSDD"
     CheckoutCard:
       type: object
       properties:
@@ -483,9 +472,6 @@ components:
           $ref: "#/components/schemas/Card"
       required:
         - card
-    CustomerID:
-      type: string
-      description: Unique ID of the saved customer who is making the payment.
     CheckoutToken:
       type: object
       properties:
@@ -494,8 +480,23 @@ components:
           description: Unique token identifying the saved payment card for the customer.
         customer_id:
           $ref: "#/components/schemas/CustomerID"
+          # type: string
+          # description: Unique ID of the customer who is making the payment.
       required:
         - token
+        - customer_id
+    CheckoutSDD:
+      type: object
+      properties:
+        # payment_type:
+        #   type: string
+        #   description: Type of the payment to use for processing the checkout.
+        #   enum:
+        #     - direct_debit
+        customer_id:
+          $ref: "#/components/schemas/CustomerID"
+      required:
+        # - payment_type
         - customer_id
     CheckoutSuccess:
       allOf:
@@ -583,6 +584,7 @@ components:
           description: Type of the payment instrument.
           enum:
             - card
+            # - direct_debit
         token:
           type: string
           description: Unique token identifying the saved payment card.
@@ -689,6 +691,7 @@ components:
           type: string
           description: Type of the payment instrument.
           enum:
+            # - card
             - direct_debit
         details:
           type: object
@@ -1121,11 +1124,9 @@ components:
           type: string
           description: HTTP status code for the error.
   # Misc properties and models reused in other models
-    InstallmentsCO:
-      type: integer
-      description: Total number of installments for recurring payments. #FIXME
-      minimum: 1
-      example: 1
+    CustomerID:
+      type: string
+      description: Unique ID of the saved customer who is making the payment.
     PIType:
       type: string
       description: Type of the payment instrument.
