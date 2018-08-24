@@ -83,7 +83,7 @@ paths:
         - accessToken:
           - payments
       requestBody:
-        $ref: "#/components/requestBodies/checkoutProcess"
+        $ref: "#/components/requestBodies/COProcess"
       responses:
         "200":
           $ref: "#/components/responses/ResCheckoutProcess"
@@ -457,6 +457,7 @@ components:
           description: Type of the payment instrument to use for processing the checkout.
           enum:
             - card
+            - direct_debit
         installments:
           $ref: "#/components/schemas/InstallmentsCO"
         card:
@@ -472,6 +473,7 @@ components:
           description: Type of the payment instrument to use for processing the checkout.
           enum:
             - card
+            - direct_debit
         installments:
           $ref: "#/components/schemas/InstallmentsCO"
         token:
@@ -479,8 +481,6 @@ components:
           description: Unique token identifying the saved payment card for the customer.
         customer_id:
           $ref: "#/components/schemas/CustomerID"
-          # type: string
-          # description: Unique ID of the customer who is making the payment.
       required:
         - payment_type
         - token
@@ -493,6 +493,7 @@ components:
           description: Type of the payment instrument to use for processing the checkout.
           enum:
             - direct_debit
+            - card
         customer_id:
           $ref: "#/components/schemas/CustomerID"
       required:
@@ -1664,7 +1665,7 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Checkout"
-    checkoutProcess:
+    COProcess:
       description: Details of the payment instrument for processing the checkout.
       content:
         application/json:
