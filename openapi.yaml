@@ -183,7 +183,7 @@ paths:
   /customers/{customer_id}/payment-instruments:
     parameters:
       - $ref: "#/components/parameters/CustomerID"
-    get: # FIXME Add details of sepa dd response.
+    get:
       description: Lists all active payment instrument resources that are saved for an identified customer.
       summary: Retrieve payment instruments
       tags:
@@ -201,7 +201,7 @@ paths:
           $ref: "#/components/responses/ErrorForbidden"
         "404":
           $ref: "#/components/responses/ErrorNotFound"
-    post: # FIXME Add option of for sepa dd pi
+    post:
       description: Creates and activates a new payment instrument resource for an identified customer.
       summary: Create a payment instrument
       tags:
@@ -280,7 +280,6 @@ paths:
           $ref: "#/components/responses/ErrorForbidden"
         "404":
           $ref: "#/components/responses/ErrorNotFound"
-    # delete:
   /me/transactions/history:
     get:
       description: Lists a history of all transactions associated with the merchant account.
@@ -290,7 +289,6 @@ paths:
       security:
         - accessToken:
           - transactions.history
-      # FIXME Add parameters/request body???
       parameters:
         - $ref: "#/components/parameters/Order"
         - $ref: "#/components/parameters/Limit"
@@ -329,8 +327,8 @@ paths:
         - $ref: "#/components/parameters/TransactionID"
         - $ref: "#/components/parameters/TransactionInternalID"
         - $ref: "#/components/parameters/TransactionCode"
-        # - $ref: "#/components/parameters/foreignTransactionId"
-        # - $ref: "#/components/parameters/clientTransactionIdTrx"
+      # - $ref: "#/components/parameters/foreignTransactionId"
+      # - $ref: "#/components/parameters/clientTransactionIdTrx"
         - $ref: "#/components/parameters/EventStatuses"
         - $ref: "#/components/parameters/EventTypes"
       responses:
@@ -445,22 +443,11 @@ components:
             oneOf:
               - "#/components/schemas/CheckoutCard"
               - "#/components/schemas/CheckoutToken"
-    InstallmentsCO:
-      type: integer
-      description: Number of installments for recurring payments. #FIXME
-      minimum: 1
-      example: 1
-    PaymentTypeCO:
-      type: string
-      description: Type of the payment instrument to use for processing the checkout.
-      enum:
-        - direct_debit
-        - card
     CheckoutCard:
       type: object
       properties:
         payment_type:
-          $ref: "#/components/schemas/PaymentTypeCO"
+          $ref: "#/components/schemas/PaymentType"
         installments:
           $ref: "#/components/schemas/InstallmentsCO"
         card:
@@ -472,7 +459,7 @@ components:
       type: object
       properties:
         payment_type:
-          $ref: "#/components/schemas/PaymentTypeCO"
+          $ref: "#/components/schemas/PaymentType"
         installments:
           $ref: "#/components/schemas/InstallmentsCO"
         token:
@@ -488,7 +475,7 @@ components:
       type: object
       properties:
         payment_type:
-          $ref: "#/components/schemas/PaymentTypeCO"
+          $ref: "#/components/schemas/PaymentType"
         customer_id:
           $ref: "#/components/schemas/CustomerID"
       required:
@@ -501,11 +488,11 @@ components:
           properties:
             transaction_code:
               type: string
-              description: Transaction code of the successful transaction with which the payment for the checkout is completed. # Returned only when the checkout status is successful.
+              description: Transaction code of the successful transaction with which the payment for the checkout is completed.
               readOnly: true
             transaction_id:
               type: string
-              description: Transaction ID of the successful transaction with which the payment for the checkout is completed. # Returned only when the checkout status is successful.
+              description: Transaction ID of the successful transaction with which the payment for the checkout is completed.
               readOnly: true
   # Customer models
     CustomerDetails:
@@ -546,7 +533,7 @@ components:
           description: City name from the address.
         country:
           type: string
-          description: Country name from the address. # The name must be in English.
+          description: Country name from the address.
         line1:
           type: string
           description: First line of the address with details of the street name and number.
@@ -573,14 +560,14 @@ components:
       type: object
       description: Details of the payment card that is saved as a payment instrument.
       properties:
-        # type:
-        #   $ref: "#/components/schemas/PIType"
         type:
-          type: string
-          description: Type of the payment instrument.
-          enum:
-            - card
-            # - direct_debit
+          $ref: "#/components/schemas/PIType"
+      # type:
+      #   type: string
+      #   description: Type of the payment instrument.
+      #   enum:
+      #     - card
+      #     # - direct_debit
         token:
           type: string
           description: Unique token identifying the saved payment card.
@@ -676,19 +663,20 @@ components:
       description: Details of the SEPA Direct Debit to modify in the saved payment instrument.
       properties:
         company_name:
-          $ref: "#/components/schemas/DDCompany"
+          $ref: "#/components/schemas/Company"
         iban:
-          $ref: "#/components/schemas/DDIban"
+          $ref: "#/components/schemas/Iban"
     PaymentInstrumentDD:
       type: object
       description: Details of the SEPA Direct Debit that is saved as a payment instrument for a customer.
       properties:
         type:
-          type: string
-          description: Type of the payment instrument.
-          enum:
-            # - card
-            - direct_debit
+          $ref: "#/components/schemas/PIType"
+        # type: string
+        # description: Type of the payment instrument.
+        # enum:
+        #   # - card
+        #   - direct_debit
         details:
           type: object
           properties:
@@ -697,9 +685,9 @@ components:
               description: Unique reference of the SEPA Direct Debit mandate.
               readOnly: true
             company_name:
-              $ref: "#/components/schemas/DDCompany"
+              $ref: "#/components/schemas/Company"
             iban:
-              $ref: "#/components/schemas/DDIban"
+              $ref: "#/components/schemas/Iban"
             masked_iban:
               type: string
               description: Masked version of the IBAN for the payment instrument where only the first 2 characters and the last 5 characters from the full IBAN are visible and all other characters are replaced by asterisks (`*`).
@@ -1120,6 +1108,17 @@ components:
           type: string
           description: HTTP status code for the error.
   # Misc properties and models reused in other models
+    InstallmentsCO:
+      type: integer
+      description: Number of installments for recurring payments. #FIXME
+      minimum: 1
+      example: 1
+    PaymentType:
+      type: string
+      description: Type of the payment instrument to use for processing the checkout.
+      enum:
+        - direct_debit
+        - card
     CustomerID:
       type: string
       description: Unique ID of the saved customer who is making the payment.
@@ -1129,13 +1128,13 @@ components:
       enum:
         - card
         - direct_debit
-    DDIban:
+    Iban:
       type: string
       description: IBAN of the bank account used for the Direct Debit mandate.
       writeOnly: true
       maxLength: 34
-      # pattern: '^[A-Z0-9]+$'
-    DDCompany:
+    # pattern: '^[A-Z0-9]+$'
+    Company:
       type: string
       description: Name of the company that holds the bank account associated with the IBAN (if applicable).
     Currency:
@@ -1174,8 +1173,8 @@ components:
       type: number
       format: float
       description: Indication of the precision of the geographical position received from the payment terminal. # Possible values are in the range `0-1`. FIXME Verify this
-      # minimum: 0
-      # maximum: 1
+    # minimum: 0
+    # maximum: 1
     Link:
       type: object
       description: Details of a link to a related resource.
@@ -1473,20 +1472,20 @@ components:
       required: false
       schema:
         type: string
-    # # foreignTransactionId:
-      #   name: foreign_transaction_id
-      #   in: query
-      #   description: Retrieves the transaction resource with the specified external (foreign) transaction ID (the `id` parameter in the transaction resource).
-      #   required:
-      #   schema:
-      #     type: string
-      # clientTransactionIdTrx:
-      #   name: client_transaction_id
-      #   in: query
-      #   description: Retrieves the transaction resource with the specified client transaction ID (the `client_transaction_id` parameter in the transaction resource).
-      #   required:
-      #   schema:
-      #     type: string
+  # # foreignTransactionId:
+    #   name: foreign_transaction_id
+    #   in: query
+    #   description: Retrieves the transaction resource with the specified external (foreign) transaction ID (the `id` parameter in the transaction resource).
+    #   required:
+    #   schema:
+    #     type: string
+    # clientTransactionIdTrx:
+    #   name: client_transaction_id
+    #   in: query
+    #   description: Retrieves the transaction resource with the specified client transaction ID (the `client_transaction_id` parameter in the transaction resource).
+    #   required:
+    #   schema:
+    #     type: string
     EventStatuses:
       name: event_statuses
       in: query
@@ -1678,12 +1677,6 @@ components:
                 type: number
                 format: float
                 description: Amount to refund for this transaction. The value cannot exceed the amount of the transaction. If you do not specify a value, the system refunds the full amount of the transaction.
-    # # sepaDdCreateRequest:
-      #   description: Details for creating a new SEPA Direct Debit mandate as a payment instrument.
-      #   content:
-      #     application/json:
-      #       schema:
-      #         - $ref: "#/components/schemas/sepaDetailsFull"
     sepaDdUpdateRequest:
       description: Details for updating an existing SEPA Direct Debit mandate as a payment instrument.
       content:
@@ -1692,26 +1685,11 @@ components:
             type: object
             properties:
               iban:
-                $ref: "#/components/schemas/DDIban"
+                $ref: "#/components/schemas/Iban"
               company_name:
-                $ref: "#/components/schemas/DDCompany"
-      # customerDdRequest:
-      #   # for sepaDD, the following fields are required:
-      #   required:
-      #     - customer_id
-      #     - personal_details
-      #       - first_name
-      #       - last_name
-      #       - phone
-      #       - address
-      #         - line1
-      #         - line2
-      #         - country
-      #         - postal_code
-      #         - city
-      #         - state
-  # examples:
-  # headers:
+                $ref: "#/components/schemas/Company"
+# examples:
+# headers:
   securitySchemes:
     accessToken:
       type: oauth2
@@ -1727,32 +1705,32 @@ components:
             user.app-settings: View and manage the settings of your client application.
             balance: View and manage your payout balance.
             payments_instruments: Manage customers and their payment instruments.
-          # # user.profile: View and manage your user profile
-            # user.payout-settings: View and manage your payout settings
-            # user.subaccounts: View and manage the user profile details of your employees
-            # products: View and manage products, shelves, prices, and VAT rates
-            # boleto: Process boleto checkouts
-            # referrals.reports:
-            # referrals.post:
-            # referrals.payout:
-            # sepa_dd: Create SEPA Direct Debit transactions
+        # # user.profile: View and manage your user profile
+          # user.payout-settings: View and manage your payout settings
+          # user.subaccounts: View and manage the user profile details of your employees
+          # products: View and manage products, shelves, prices, and VAT rates
+          # boleto: Process boleto checkouts
+          # referrals.reports:
+          # referrals.post:
+          # referrals.payout:
+          # sepa_dd: Create SEPA Direct Debit transactions
         clientCredentials:
-          # authorizationUrl: https://api.sumup.com/authorize
+        # authorizationUrl: https://api.sumup.com/authorize
           tokenUrl: https://api.sumup.com/token
           scopes:
-            # payments: Make payments by creating and processing checkouts.
             transactions.history: View your transactions and transaction history.
-            # user.profile_readonly: View your user profile details.
             user.app-settings: View and manage the settings of your client application.
-            # balance: View and manage your payout balance.
-            # payments_instruments: Manage customers and their payment instruments.
-          # # user.profile: View and manage your user profile
-            # user.payout-settings: View and manage your payout settings
-            # user.subaccounts: View and manage the user profile details of your employees
-            # products: View and manage products, shelves, prices, and VAT rates
-            # boleto: Process boleto checkouts
-            # referrals.reports:
-            # referrals.post:
-            # referrals.payout:
-  # links:
-  # callbacks:
+        # # payments: Make payments by creating and processing checkouts.
+          # user.profile_readonly: View your user profile details.
+          # balance: View and manage your payout balance.
+          # payments_instruments: Manage customers and their payment instruments.
+          # user.profile: View and manage your user profile
+          # user.payout-settings: View and manage your payout settings
+          # user.subaccounts: View and manage the user profile details of your employees
+          # products: View and manage products, shelves, prices, and VAT rates
+          # boleto: Process boleto checkouts
+          # referrals.reports:
+          # referrals.post:
+          # referrals.payout:
+# links:
+# callbacks:
