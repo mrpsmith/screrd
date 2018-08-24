@@ -274,7 +274,11 @@ paths:
               $ref: "#/components/schemas/PaymentInstrumentDDUpdate"
       responses:
         "200":
-          $ref: "#/components/responses/ResPaymentInstrument"
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentInstrumentDD"
         "400":
           $ref: "#/components/responses/ErrorBadRequest"
         "401":
