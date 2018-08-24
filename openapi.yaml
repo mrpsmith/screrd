@@ -445,11 +445,6 @@ components:
                 # - balance
                 # - moto
                 # - boleto
-            installments:
-              type: integer
-              description: Number of installments for recurring payments. #FIXME
-              minimum: 1
-              example: 1
           required:
             - payment_type
         - oneOf:
@@ -460,14 +455,21 @@ components:
           discriminator:
             propertyName: payment_type
             maping:
-              card: 
+              card:
                 oneOf:
                   - "#/components/schemas/CheckoutCard"
                   - "#/components/schemas/CheckoutToken"
               direct_debit: "#/components/schemas/CheckoutSDD"
+    InstallmentsCO:
+      type: integer
+      description: Number of installments for recurring payments. #FIXME
+      minimum: 1
+      example: 1
     CheckoutCard:
       type: object
       properties:
+        installments:
+          $ref: "#/components/schemas/InstallmentsCO"
         card:
           $ref: "#/components/schemas/Card"
       required:
@@ -475,6 +477,8 @@ components:
     CheckoutToken:
       type: object
       properties:
+        installments:
+          $ref: "#/components/schemas/InstallmentsCO"
         token:
           type: string
           description: Unique token identifying the saved payment card for the customer.
