@@ -75,13 +75,14 @@ paths:
         "404":
           $ref: "#/components/responses/ErrorNotFound"
     put:
-      description: Processes an identified checkout resource with the specified payment instrument.
+      description: Processes an identified checkout resource with the specified payment instrument and create a transaction.
       summary: Process a checkout
       tags:
         - Checkouts
       security:
         - accessToken:
           - payments
+          - sepa_dd
       requestBody:
         $ref: "#/components/requestBodies/COProcess"
       responses:
@@ -433,28 +434,47 @@ components:
         - transactions
     CheckoutProcess:
       oneOf:
-        - $ref: "#/components/schemas/CheckoutCard"
         - $ref: "#/components/schemas/CheckoutSEPA"
+        - $ref: "#/components/schemas/CheckoutCard"
+        - $ref: "#/components/schemas/CheckoutToken"
       discriminator:
         propertyName: payment_type
         maping:
           direct_debit: "#/components/schemas/CheckoutSEPA"
-          card: "#/components/schemas/CheckoutCard"
+          card:
+            oneOf:
+              - "#/components/schemas/CheckoutCard"
+              - "#/components/schemas/CheckoutToken"
+    InstallmentsCO:
+      type: integer
+      description: Number of installments for recurring payments. #FIXME
+      minimum: 1
+      example: 1
+    PaymentTypeCO:
+      type: string
+      description: Type of the payment instrument to use for processing the checkout.
+      enum:
+        - direct_debit
+        - card
     CheckoutCard:
       type: object
       properties:
         payment_type:
-          type: string
-          description: Type of the payment instrument to use for processing the checkout. When the value is `card`, either the `card` object or both the `token` and `customer_id` properties are required.
-          enum:
-            - card
+          $ref: "#/components/schemas/PaymentTypeCO"
         installments:
-          type: integer
-          description: Number of installments for recurring payments. #FIXME
-          minimum: 1
-          example: 1
+          $ref: "#/components/schemas/InstallmentsCO"
         card:
           $ref: "#/components/schemas/Card"
+      required:
+        - payment_type
+        - card
+    CheckoutToken:
+      type: object
+      properties:
+        payment_type:
+          $ref: "#/components/schemas/PaymentTypeCO"
+        installments:
+          $ref: "#/components/schemas/InstallmentsCO"
         token:
           type: string
           description: Unique token identifying the saved payment card for the customer.
@@ -462,17 +482,13 @@ components:
           $ref: "#/components/schemas/CustomerID"
       required:
         - payment_type
-      # - card
-      # - token
-      # - customer_id
+        - token
+        - customer_id
     CheckoutSEPA:
       type: object
       properties:
         payment_type:
-          type: string
-          description: Type of the payment instrument to use for processing the checkout.
-          enum:
-            - direct_debit
+          $ref: "#/components/schemas/PaymentTypeCO"
         customer_id:
           $ref: "#/components/schemas/CustomerID"
       required:
