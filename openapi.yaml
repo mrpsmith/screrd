@@ -450,6 +450,9 @@ components:
             - direct_debit
         customer_id:
           $ref: "#/components/schemas/CustomerID"
+      required:
+        - payment_type
+        - customer_id
     CheckoutProcessCard:
       allOf:
         - type: object
