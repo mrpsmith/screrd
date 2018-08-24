@@ -444,6 +444,11 @@ components:
       oneOf:
         - $ref: "#/components/schemas/CheckoutCard"
         - $ref: "#/components/schemas/CheckoutToken"
+      discriminator:
+        propertyName: payment_type
+        mapping:
+          card: "#/components/schemas/CheckoutCard"
+          token: "#/components/schemas/CheckoutToken"
     CheckoutCard:
       type: object
       properties:
