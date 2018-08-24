@@ -274,16 +274,16 @@ paths:
               $ref: "#/components/schemas/PaymentInstrumentDDUpdate"
       responses:
         "200":
-          $ref: "#/components/responses/FIXME"
+          $ref: "#/components/responses/ResPaymentInstrument"
         "400":
-          $ref: "#/components/responses/errorBadRequest"
+          $ref: "#/components/responses/ErrorBadRequest"
         "401":
-          $ref: "#/components/responses/errorNotAuthorized"
+          $ref: "#/components/responses/ErrorNotAuthorized"
         "403":
-          $ref: "#/components/responses/errorForbidden"
+          $ref: "#/components/responses/ErrorForbidden"
         "404":
-          $ref: "#/components/responses/errorNotFound"
-    delete:
+          $ref: "#/components/responses/ErrorNotFound"
+    # delete:
   /me/transactions/history:
     get:
       description: Lists a history of all transactions associated with the merchant account.
