@@ -433,22 +433,13 @@ components:
     CheckoutProcess:
       oneOf:
         - $ref: "#/components/schemas/CheckoutSEPA"
-        - $ref: "#/components/schemas/CheckoutCT"
-        # - $ref: "#/components/schemas/CheckoutToken"
+        - $ref: "#/components/schemas/CheckoutCard"
+      # - $ref: "#/components/schemas/CheckoutToken"
       discriminator:
         propertyName: payment_type
         mapping:
           direct_debit: "#/components/schemas/CheckoutSEPA"
-          card: "#/components/schemas/CheckoutCT"
-    CheckoutCT:
-      oneOf:
-        - $ref: "#/components/schemas/CheckoutCard"
-        - $ref: "#/components/schemas/CheckoutToken"
-      discriminator:
-        propertyName: payment_type
-        mapping:
           card: "#/components/schemas/CheckoutCard"
-          token: "#/components/schemas/CheckoutToken"
     CheckoutCard:
       type: object
       properties:
@@ -458,25 +449,39 @@ components:
           $ref: "#/components/schemas/InstallmentsCO"
         card:
           $ref: "#/components/schemas/Card"
-      required:
-        - payment_type
-        - card
-    CheckoutToken:
-      type: object
-      properties:
-        payment_type:
-          $ref: "#/components/schemas/PaymentType"
-        installments:
-          $ref: "#/components/schemas/InstallmentsCO"
         token:
           type: string
           description: Unique token identifying the saved payment card for the customer.
         customer_id:
           $ref: "#/components/schemas/CustomerID"
-      required:
-        - payment_type
-        - token
-        - customer_id
+  # CheckoutCard:
+  #   type: object
+  #   properties:
+  #     payment_type:
+  #       $ref: "#/components/schemas/PaymentType"
+  #     installments:
+  #       $ref: "#/components/schemas/InstallmentsCO"
+  #     card:
+  #       $ref: "#/components/schemas/Card"
+  #   required:
+  #     - payment_type
+  #     - card
+  # CheckoutToken:
+  #   type: object
+  #   properties:
+  #     payment_type:
+  #       $ref: "#/components/schemas/PaymentType"
+  #     installments:
+  #       $ref: "#/components/schemas/InstallmentsCO"
+  #     token:
+  #       type: string
+  #       description: Unique token identifying the saved payment card for the customer.
+  #     customer_id:
+  #       $ref: "#/components/schemas/CustomerID"
+  #   required:
+  #     - payment_type
+  #     - token
+  #     - customer_id
     CheckoutSEPA:
       type: object
       properties:
