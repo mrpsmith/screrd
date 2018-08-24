@@ -51,11 +51,11 @@ paths:
         "201":
           $ref: "#/components/responses/ResCheckoutCreate"
         "400":
-          $ref: "#/components/responses/ErrorBadRequest"
+          $ref: "#/components/responses/ErrorBadRequestCO"
         "401":
           $ref: "#/components/responses/ErrorNotAuthorized"
         "409":
-          $ref: "#/components/responses/ErrorConflict"
+          $ref: "#/components/responses/ErrorConflictCO"
   /checkouts/{id}:
     parameters:
       - $ref: "#/components/parameters/CheckoutID"
@@ -88,13 +88,13 @@ paths:
         "200":
           $ref: "#/components/responses/ResCheckoutProcess"
         "400":
-          $ref: "#/components/responses/ErrorBadRequest"
+          $ref: "#/components/responses/ErrorBadRequestCOP"
         "401":
           $ref: "#/components/responses/ErrorNotAuthorized"
         "404":
           $ref: "#/components/responses/ErrorNotFound"
         "409":
-          $ref: "#/components/responses/ErrorConflict"
+          $ref: "#/components/responses/ErrorConflictCOP"
     delete:
       description: Deactivates an identified checkout resource.
       summary: Deactivate a checkout
@@ -111,10 +111,10 @@ paths:
         "404":
           $ref: "#/components/responses/ErrorNotFound"
         "409":
-          $ref: "#/components/responses/ErrorConflict"
+          $ref: "#/components/responses/ErrorConflictCOP"
   /customers:
     post:
-      description: Creates a new saved customer resource.
+      description: Creates a new saved customer resource. For SEPA Direct Debit mandates, all properties are required.
       summary: Create a customer
       tags:
         - Customers
@@ -130,14 +130,12 @@ paths:
       responses:
         "201":
           $ref: "#/components/responses/ResCustomer"
-        "400":
-          $ref: "#/components/responses/ErrorBadRequest"
         "401":
           $ref: "#/components/responses/ErrorNotAuthorized"
         "403":
           $ref: "#/components/responses/ErrorForbidden"
         "409":
-          $ref: "#/components/responses/ErrorConflict"
+          $ref: "#/components/responses/ErrorConflictCS"
   /customers/{customer_id}:
     parameters:
       - $ref: "#/components/parameters/CustomerID"
@@ -175,16 +173,12 @@ paths:
       responses:
         "200":
           $ref: "#/components/responses/ResCustomer"
-        "400":
-          $ref: "#/components/responses/ErrorBadRequest"
         "401":
           $ref: "#/components/responses/ErrorNotAuthorized"
         "403":
           $ref: "#/components/responses/ErrorForbidden"
         "404":
           $ref: "#/components/responses/ErrorNotFound"
-        "409":
-          $ref: "#/components/responses/ErrorConflict"
   /customers/{customer_id}/payment-instruments:
     parameters:
       - $ref: "#/components/parameters/CustomerID"
@@ -224,7 +218,7 @@ paths:
         "200":
           $ref: "#/components/responses/ResPaymentInstrument"
         "400":
-          $ref: "#/components/responses/ErrorBadRequest"
+          $ref: "#/components/responses/ErrorBadRequestPI"
         "401":
           $ref: "#/components/responses/ErrorNotAuthorized"
         "403":
@@ -232,7 +226,7 @@ paths:
         "404":
           $ref: "#/components/responses/ErrorNotFound"
         "409":
-          $ref: "#/components/responses/ErrorConflict"
+          $ref: "#/components/responses/ErrorConflictPI"
   /customers/{customer_id}/payment-instruments/{token}:
     parameters:
       - $ref: "#/components/parameters/CustomerID"
@@ -279,8 +273,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PaymentInstrumentDD"
-        "400":
-          $ref: "#/components/responses/ErrorBadRequest"
         "401":
           $ref: "#/components/responses/ErrorNotAuthorized"
         "403":
@@ -364,7 +356,7 @@ paths:
         "204":
           description: OK
         "409":
-          $ref: "#/components/responses/ErrorConflict"
+          $ref: "#/components/responses/ErrorConflictTX"
 security:
   - accessToken: []
 components:
@@ -1290,35 +1282,42 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/TransactionFull" # FIXME Fix the link
-    ErrorBadRequest:
+    ErrorBadRequestCO:
       description: Bad Request
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/ErrorExt"
-          examples:
-            missingParameter:
-              description: A required parameter is missing.
-              value: {"message":"Validation error","error_code":"MISSING","param":"pay_to_email"}
-            invalidParameter:
-              description: A required parameters has an invalid value.
-              value: {"message":"Validation error","error_code":"INVALID","param":"card.expiry_year"}
+          example:
+            description: A required parameter is missing.
+            value: {"message":"Validation error","error_code":"MISSING","param":"pay_to_email"}
+    ErrorBadRequestCOP:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorExt"
+          example:
+            description: A required parameter is missing.
+            value: {"message":"Validation error","error_code":"MISSING","param":"payment_type"}
+    ErrorBadRequestPI:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorExt"
+          example:
+            description: A required parameters has an invalid value.
+            value: {"message":"Validation error","error_code":"INVALID","param":"card.expiry_year"}
     ErrorNotAuthorized:
       description: Unauthorized
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
-          examples:
-            invalidToken:
-              description: Your access token is invalid or expired.
-              value: {"error_message":"invalid access token","error_code":"NOT_AUTHORIZED"}
-            missingToken:
-              description: No access token is provided.
-              value: {"message":"Not authorized","error_code":"NOT_AUTHORIZED"}
-            authFailure:
-              description: Your authorization request failed due to invalid parameters.
-              value: {"error_message":"authentication failed","error_code":"NOT_AUTHORIZED"}
+          example:
+            description: Missing or invalid access token.
+            value: {"message":"Not authorized","error_code":"NOT_AUTHORIZED"}
     ErrorForbidden:
       description: Forbidden
       content:
@@ -1337,25 +1336,51 @@ components:
           example:
             description: An identified resource is not found on the server.
             value: {"error_code":"NOT_FOUND","message":"Resource not found"}
-    ErrorConflict:
+    ErrorConflictCO:
       description: Conflict
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
-          examples:
-            existingCheckout:
+          example:
               description: A resource with the specified parameters already exists on the server.
               value: {"error_code":"DUPLICATED_CHECKOUT","message":"Checkout with this checkout reference and pay to email already exists"}
-            existingCustomer:
-              description: A resource with the specified identifier already exists on the server.
-              value: {"message":"Customer already exists","error_code":"CUSTOMER_ALREADY_EXISTS"}
-            insufficientBalance:
-              description: The specified payment instrument does not have enough balance to process the payment.
-              value: {"error_code":"INSUFFICIENT_BALANCE","message":"Sender balance not enough to cover the payment"}
-            maxPINumber:
-              description: Maximum number of payment instruments per customer is reached. Currently, the maximum allowed number is 4.
-              value: {"error_code":"MAX_INSTRUMENT_COUNT","message":"Max number of payment instruments on file reached"}
+    ErrorConflictCOP:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+              description: A resource with the specified parameters already exists on the server.
+              value: {"error_code":"CHECKOUT_PROCESSED","message":"Checkout is already processed"}
+    ErrorConflictCS:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            description: A resource with the specified identifier already exists on the server.
+            value: {"message":"Customer already exists","error_code":"CUSTOMER_ALREADY_EXISTS"}
+    ErrorConflictPI:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            description: Maximum number of payment instruments per customer is reached. Currently, the maximum allowed number is 4.
+            value: {"error_code":"MAX_INSTRUMENT_COUNT","message":"Max number of payment instruments on file reached"}
+    ErrorConflictTX:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            description: The transaction is not refundable in its current state.
+            value: {"error_code":"CONFLICT","message":"The transaction is not refundable in its current state"}
   parameters:
     TxID:
       name: tx_id
