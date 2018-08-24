@@ -432,6 +432,25 @@ components:
         - date
         - transactions
     CheckoutProcess:
+      oneOf:
+        - $ref: "#/components/schemas/CheckoutProcessCard"
+        - $ref: "#/components/schemas/CheckoutProcessSDD"
+      discriminator:
+        propertyName: payment_type
+        mapping:
+          card: "#/components/schemas/CheckoutProcessCard"
+          direct_debit: "#/components/schemas/CheckoutProcessSDD"
+    CheckoutProcessSDD:
+      type: object
+      properties:
+        payment_type:
+          type: string
+          description: Type of the payment to use for processing the checkout.
+          enum:
+            - direct_debit
+        customer_id:
+          $ref: "#/components/schemas/CustomerID"
+    CheckoutProcessCard:
       allOf:
         - type: object
           # description:
@@ -446,10 +465,7 @@ components:
                 # - moto
                 # - boleto
             installments:
-              type: integer
-              description: Number of installments for recurring payments. #FIXME
-              minimum: 1
-              example: 1
+              $ref: "#/components/schemas/InstallmentsCO"
           required:
             - payment_type
         - oneOf:
@@ -463,6 +479,9 @@ components:
           $ref: "#/components/schemas/Card"
       required:
         - card
+    CustomerID:
+      type: string
+      description: Unique ID of the saved customer who is making the payment.
     CheckoutToken:
       type: object
       properties:
@@ -470,12 +489,11 @@ components:
           type: string
           description: Unique token identifying the saved payment card for the customer.
         customer_id:
-          type: string
-          description: Unique ID of the customer who is making the payment.
+          $ref: "#/components/schemas/CustomerID"
       required:
         - token
         - customer_id
-    CheckoutSuccess: # TOFIX Move this to the responses section?
+    CheckoutSuccess:
       allOf:
         - $ref: "#/components/schemas/Checkout"
         - type: object
@@ -561,7 +579,6 @@ components:
           description: Type of the payment instrument.
           enum:
             - card
-            # - direct_debit
         token:
           type: string
           description: Unique token identifying the saved payment card.
@@ -652,7 +669,6 @@ components:
         - cvv
         - last_4_digits
         - type
-    # TOFIX Move `iban` and `company_name` as reusable parameters and use them in a separate model for updating the saved DD PI (where they are not required)
     PaymentInstrumentDDUpdate:
       type: object
       description: Details of the SEPA Direct Debit to modify in the saved payment instrument.
@@ -669,7 +685,6 @@ components:
           type: string
           description: Type of the payment instrument.
           enum:
-            # - card
             - direct_debit
         details:
           type: object
@@ -691,7 +706,7 @@ components:
               description: SWIFT code of the bank maintaining the account.
               readOnly: true
             # IMPROVEMENT Suggest to move this to the checkout model on analogy to the card option
-            is_recurring: # FIXME Create a new model and move this property there to accommodate the PUT request
+            is_recurring:
               type: boolean
               description: Indicates whether the mandate is for a recurring payment.
               default: false # FIXME Verify this
@@ -791,9 +806,9 @@ components:
           type: number
           format: float
           description: Amount of the tip (out of the total transaction amount).
-        entry_mode:  # FIXME check what are the possible values
+        entry_mode:  # FIXME Verify possible values
           type: string
-          description: Entry mode of the transaction. # FIXME
+          description: Entry mode of the payment details.
           enum:
             - BOLETO
             - CHIP
@@ -818,15 +833,15 @@ components:
         product_summary:
           type: string
           description: Short description of the payment. The value is taken from the `description` property of the related checkout resource.
-        payouts_total: # FIXME reusable
+        payouts_total:
           type: integer
           description: Total number of payouts to the registered user specified in the `user` property.
-        payouts_received: # FIXME reusable
+        payouts_received:
           type: integer
           description: Number of payouts that are made to the registered user specified in the `user` property.
-        payout_plan: # FIXME reusable
+        payout_plan:
           type: string
-          description: Payout plan of the registered user at the time when the transaction was made. # FIXME
+          description: Payout plan of the registered user at the time when the transaction was made. # FIXME Verify this
           enum:
             - SINGLE_PAYMENT
             - TRUE_INSTALLMENT
@@ -883,7 +898,7 @@ components:
               $ref: "#/components/schemas/HorizontalAccuracy"
             simple_payment_type:
               type: string
-              description: FIXME
+              description: Simple name of the payment type.
               enum:
                 - CASH
                 - CC_SIGNATURE
@@ -894,7 +909,7 @@ components:
                 - MOTO
             verification_method:
               type: string
-              description: FIXME
+              description: Verification method used for the transaction.
               enum:
                 - none
                 - signature
@@ -969,7 +984,7 @@ components:
               description: Indicates whether tax deduction is enabled for the transaction.
     TransactionEvent:
       type: object
-      description: FIXME
+      description: Details of a transaction event.
       properties:
         id:
           $ref: "#/components/schemas/EventID"
@@ -1021,7 +1036,7 @@ components:
         deducted_fee_amount:
           type: number
           format: float
-          description: Fee amount deducted for the event. # FIXME
+          description: Fee amount deducted for the event. # FIXME Verify this
     Product:
       type: object
       description: Details of the product for which the payment is made.
@@ -1102,6 +1117,11 @@ components:
           type: string
           description: HTTP status code for the error.
   # Misc properties and models reused in other models
+    InstallmentsCO:
+      type: integer
+      description: Total number of installments for recurring payments. #FIXME
+      minimum: 1
+      example: 1
     PIType:
       type: string
       description: Type of the payment instrument.
@@ -1152,7 +1172,7 @@ components:
     HorizontalAccuracy:
       type: number
       format: float
-      description: Indication of the precision of the geographical position received from the payment terminal. # Possible values are in the range `0-1`. FIXME
+      description: Indication of the precision of the geographical position received from the payment terminal. # Possible values are in the range `0-1`. FIXME Verify this
       # minimum: 0
       # maximum: 1
     Link:
@@ -1271,7 +1291,7 @@ components:
               items:
                 type: array
                 items:
-                  $ref: "#/components/schemas/TransactionHistory" # FIXME Fix the link
+                  $ref: "#/components/schemas/TransactionHistory"
               links:
                 type: array
                 items:
@@ -1281,7 +1301,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/TransactionFull" # FIXME Fix the link
+            $ref: "#/components/schemas/TransactionFull"
     ErrorBadRequestCO:
       description: Bad Request
       content:
@@ -1448,7 +1468,7 @@ components:
     TransactionCode:
       name: transaction_code
       in: query
-      description: Retrieves the transaction resource with the specified transaction ID (the `transaction_code` parameter in the transaction resource).
+      description: Retrieves the transaction resource with the specified transaction code.
       required: false
       schema:
         type: string
