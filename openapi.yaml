@@ -437,7 +437,7 @@ components:
         - $ref: "#/components/schemas/CheckoutToken"
       discriminator:
         propertyName: payment_type
-        maping:
+        mapping:
           direct_debit: "#/components/schemas/CheckoutSEPA"
           card:
             oneOf:
@@ -1118,7 +1118,7 @@ components:
       description: |
         Type of the payment instrument to use for processing the checkout. Currently, the possible values are `card` and `direct_debit`. When you use the `card` option, you can specify the payment card details in one of the following ways:
           * Provide the full card details in a `card` object.
-          * Provide a saved payment instrument for an existing customer in the `token` and `customer_id` properties.
+          * Specify a saved payment instrument for an existing customer in the `token` and `customer_id` properties.
       enum:
         - direct_debit
         - card
@@ -1691,8 +1691,8 @@ components:
                 $ref: "#/components/schemas/Iban"
               company_name:
                 $ref: "#/components/schemas/Company"
-# examples:
-# headers:
+  # examples:
+  # headers:
   securitySchemes:
     accessToken:
       type: oauth2
