@@ -433,17 +433,17 @@ components:
         - transactions
     CheckoutProcess:
       oneOf:
-        - $ref: "#/components/schemas/CheckoutCard"
-        - $ref: "#/components/schemas/CheckoutToken"
+        - $ref: "#/components/schemas/CheckoutCardToken"
         - $ref: "#/components/schemas/CheckoutSDD"
       discriminator:
         propertyName: payment_type
         maping:
           direct_debit: "#/components/schemas/CheckoutSDD"
-          card:
-            oneOf:
-              - "#/components/schemas/CheckoutCard"
-              - "#/components/schemas/CheckoutToken"
+          card: "#/components/schemas/CheckoutCardToken"
+    CheckoutCardToken:
+      oneOf:
+        - $ref: "#/components/schemas/CheckoutCard"
+        - $ref: "#/components/schemas/CheckoutToken"
     InstallmentsCO:
       type: integer
       description: Number of installments for recurring payments. #FIXME
@@ -457,7 +457,6 @@ components:
           description: Type of the payment instrument to use for processing the checkout.
           enum:
             - card
-            - direct_debit
         installments:
           $ref: "#/components/schemas/InstallmentsCO"
         card:
@@ -473,7 +472,6 @@ components:
           description: Type of the payment instrument to use for processing the checkout.
           enum:
             - card
-            - direct_debit
         installments:
           $ref: "#/components/schemas/InstallmentsCO"
         token:
@@ -493,7 +491,6 @@ components:
           description: Type of the payment instrument to use for processing the checkout.
           enum:
             - direct_debit
-            - card
         customer_id:
           $ref: "#/components/schemas/CustomerID"
       required:
