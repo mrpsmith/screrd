@@ -433,57 +433,73 @@ components:
     CheckoutProcess:
       oneOf:
         - $ref: "#/components/schemas/CheckoutSEPA"
-        - $ref: "#/components/schemas/CheckoutCardToken"
-      # - $ref: "#/components/schemas/CheckoutToken"
+        - $ref: "#/components/schemas/CheckoutCard"
+        # - $ref: "#/components/schemas/CheckoutToken"
       discriminator:
         propertyName: payment_type
         mapping:
           direct_debit: "#/components/schemas/CheckoutSEPA"
-          card: "#/components/schemas/CheckoutCardToken"
-    CheckoutCardToken:
+          card: "#/components/schemas/CheckoutCard"
+            # oneOf:
+            #   - "#/components/schemas/CheckoutCard"
+            #   - "#/components/schemas/CheckoutToken"
+    CheckoutCard:
       type: object
-      properties:
-        payment_type:
-          $ref: "#/components/schemas/PaymentType"
-        installments:
-          $ref: "#/components/schemas/InstallmentsCO"
-        card:
-          $ref: "#/components/schemas/Card"
-        token:
-          type: string
-          description: Unique token identifying the saved payment card for the customer.
-        customer_id:
-          $ref: "#/components/schemas/CustomerID"
-      required:
-        - payment_type
-  # CheckoutCard:
-  #   type: object
-  #   properties:
-  #     payment_type:
-  #       $ref: "#/components/schemas/PaymentType"
-  #     installments:
-  #       $ref: "#/components/schemas/InstallmentsCO"
-  #     card:
-  #       $ref: "#/components/schemas/Card"
-  #   required:
-  #     - payment_type
-  #     - card
-  # CheckoutToken:
-  #   type: object
-  #   properties:
-  #     payment_type:
-  #       $ref: "#/components/schemas/PaymentType"
-  #     installments:
-  #       $ref: "#/components/schemas/InstallmentsCO"
-  #     token:
-  #       type: string
-  #       description: Unique token identifying the saved payment card for the customer.
-  #     customer_id:
-  #       $ref: "#/components/schemas/CustomerID"
-  #   required:
-  #     - payment_type
-  #     - token
-  #     - customer_id
+      oneOf:
+        - properties:
+            payment_type:
+              $ref: "#/components/schemas/PaymentType"
+            installments:
+              $ref: "#/components/schemas/InstallmentsCO"
+            card:
+              $ref: "#/components/schemas/Card"
+          required:
+            - payment_type
+            - card
+          additionalProperties: false
+        - properties:
+            payment_type:
+              $ref: "#/components/schemas/PaymentType"
+            installments:
+              $ref: "#/components/schemas/InstallmentsCO"
+            token:
+              type: string
+              description: Unique token identifying the saved payment card for the customer.
+            customer_id:
+              $ref: "#/components/schemas/CustomerID"
+          required:
+            - payment_type
+            - token
+            - customer_id
+          additionalProperties: false
+    # CheckoutCard:
+    #   type: object
+    #   properties:
+    #     payment_type:
+    #       $ref: "#/components/schemas/PaymentType"
+    #     installments:
+    #       $ref: "#/components/schemas/InstallmentsCO"
+    #     card:
+    #       $ref: "#/components/schemas/Card"
+    #   required:
+    #     - payment_type
+    #     - card
+    # CheckoutToken:
+    #   type: object
+    #   properties:
+    #     payment_type:
+    #       $ref: "#/components/schemas/PaymentType"
+    #     installments:
+    #       $ref: "#/components/schemas/InstallmentsCO"
+    #     token:
+    #       type: string
+    #       description: Unique token identifying the saved payment card for the customer.
+    #     customer_id:
+    #       $ref: "#/components/schemas/CustomerID"
+    #   required:
+    #     - payment_type
+    #     - token
+    #     - customer_id
     CheckoutSEPA:
       type: object
       properties:
@@ -1748,6 +1764,3 @@ components:
           # referrals.reports:
           # referrals.post:
           # referrals.payout:
-# links:
-# callbacks:
-
