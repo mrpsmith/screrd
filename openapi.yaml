@@ -129,7 +129,7 @@ paths:
           - payments
       responses:
         "204":
-          description: OK
+          $ref: "#/components/responses/NoBodyResponse"
         "401":
           $ref: "#/components/responses/ErrorNotAuthorized"
         "404":
@@ -268,7 +268,7 @@ paths:
           - payment_instruments
       responses:
         "204":
-          description: OK
+          $ref: "#/components/responses/NoBodyResponse"
         "401":
           $ref: "#/components/responses/ErrorNotAuthorized"
         "403":
@@ -290,7 +290,7 @@ paths:
           $ref: "#/components/requestBodies/Refund"
       responses:
         "204":
-          description: OK
+          $ref: "#/components/responses/NoBodyResponse"
         "409":
           description: Conflict
           content:
@@ -1265,18 +1265,14 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/TransactionFull"
+    NoBodyResponse:
+      description: OK
+      content:
+        application/json:
+          examples:
+            NoBody:
+              value: {}
     # Error responses
-    # ErrorBadRequest:
-    #   description: Bad Request
-    #   content:
-    #     application/json:
-    #       schema:
-    #         $ref: "#/components/schemas/ErrorExtended"
-    #       examples:
-    #         Invalid_Parameter:
-    #           description: A required parameter has an invalid value.
-    #           value: {"message":"Validation error","error_code":"INVALID","param":"card.expiry_year"}
-    # FIXME - See if this one works
     ErrorBadRequest:
       description: Bad Request
       content:
