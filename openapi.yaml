@@ -316,8 +316,9 @@ paths:
         - $ref: "#/components/parameters/LimitFilter"
         - $ref: "#/components/parameters/UserIDFilter"
         - $ref: "#/components/parameters/UsersFilter"
-        - $ref: "#/components/parameters/GeoCoordinatesFilter"
-        - $ref: "#/components/parameters/ReadersFilter"
+        # Commented out as irrelevant to avoid unnecessary confusion:
+        # - $ref: "#/components/parameters/GeoCoordinatesFilter"
+        # - $ref: "#/components/parameters/ReadersFilter"
         - $ref: "#/components/parameters/StatusesFilter"
         - $ref: "#/components/parameters/PaymentTypesFilter"
         - $ref: "#/components/parameters/TypesFilter"
@@ -1477,6 +1478,7 @@ components:
         type: array
         items:
           type: string
+          # DEBUG - Verify possible values and comment out the unnecessary ones to avoid confusion.
           enum:
             - CASH
             - POS
