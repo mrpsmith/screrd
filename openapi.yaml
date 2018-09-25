@@ -471,7 +471,8 @@ components:
         - type: object
           properties:
             token:
-              $ref: "#/components/schemas/CardToken"
+              type: string
+              description: Unique token identifying the saved payment card for a customer.
             customer_id:
               $ref: "#/components/schemas/CustomerID"
           required:
@@ -547,7 +548,9 @@ components:
       description: Details of the payment card that is saved as a payment instrument.
       properties:
         token:
-          $ref: "#/components/schemas/CardToken"
+          type: string
+          description: Unique token identifying the saved payment card for a customer.
+          readOnly: true
         active:
           type: boolean
           description: Indicates whether the payment instrument is active and can be used for payments. To deactivate it, send a `DELETE` request to the resource endpoint.
@@ -971,10 +974,6 @@ components:
         - cvv
         - last_4_digits
         - type
-    CardToken:
-      type: string
-      description: Unique token identifying the saved payment card for a customer.
-      readOnly: true
     CustomerID:
       type: string
       description: Unique ID of the customer.
