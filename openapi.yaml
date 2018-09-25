@@ -597,6 +597,7 @@ components:
           description: Current status of the transaction.
           # DEBUG - Verify the possible values and comment out the irrelevant ones to avoid confusion
           enum:
+            - PAID_OUT
             - AUTH
             - CANCELLED
             - CAPTURED
@@ -611,7 +612,6 @@ components:
             - MISMATCHED
             - NON_COLLECTION
             - NOT_SENT_TO_ACQUIRER
-            - PAID_OUT
             - PAYOUT_CALCULATED
             - PAYOUT_CREATED
             - PAYOUT_FAILED
@@ -635,11 +635,11 @@ components:
           description: Payment type used for the transaction.
           # DEBUG - Verify the possible values and comment out the irrelevant ones to avoid confusion
           enum:
+            - ECOM
             - BALANCE
             - BITCOIN
             - BOLETO
             - CASH
-            - ECOM
             - POS
             - RECURRING
             - UNKNOWN
@@ -666,11 +666,11 @@ components:
           description: Entry mode of the payment details.
           # DEBUG - Verify the possible values and comment out the irrelevant ones to avoid confusion
           enum:
+            - customer entry
             - BOLETO
             - CHIP
             - CONTACTLESS
             - CONTACTLESS_MAGSTRIPE
-            - customer entry
             - DIRECT_DEBIT
             - MAGSTRIPE
             - MAGSTRIPE_FALLBACK
@@ -723,6 +723,7 @@ components:
               type: string
               description: Issuing card network of the payment card used for the transaction.
               enum:
+                - VISA
                 - AMEX
                 - CUP
                 - DINERS
@@ -733,7 +734,6 @@ components:
                 - JCB
                 - MAESTRO
                 - MASTERCARD
-                - VISA
                 - VISA_ELECTRON
                 - VISA_VPAY
                 - UNKNOWN
@@ -756,13 +756,13 @@ components:
               type: string
               description: Simple name of the payment type.
               enum:
+                - MOTO
                 - CASH
                 - CC_SIGNATURE
                 - ELV
                 - CC_CUSTOMER_ENTERED
                 - MANUAL_ENTRY
                 - EMV
-                - MOTO
             verification_method:
               type: string
               description: Verification method used for the transaction.
@@ -784,8 +784,8 @@ components:
               description: Payout method for the transaction amount.
               enum:
                 - BANK_ACCOUNT
-                - PREPAID_CARD
                 - BALANCE
+                - PREPAID_CARD
             products:
               type: array
               description: List of products from the merchant's catalog for which the transaction serves as a payment.
@@ -804,13 +804,13 @@ components:
               type: string
               description: Status generated fromthe processing status and the latest transaction state.
               enum:
+                - SUCCESSFUL
                 - CANCEL_FAILED
                 - CANCELLED
                 - CHARGEBACK
                 - FAILED
                 - REFUND_FAILED
                 - REFUNDED
-                - SUCCESSFUL
             links:
               type: array
               description: List of hyperlinks for accessing related resources.
