@@ -1266,35 +1266,35 @@ components:
           schema:
             $ref: "#/components/schemas/TransactionFull"
     # Error responses
+    # ErrorBadRequest:
+    #   description: Bad Request
+    #   content:
+    #     application/json:
+    #       schema:
+    #         $ref: "#/components/schemas/ErrorExtended"
+    #       examples:
+    #         Invalid_Parameter:
+    #           description: A required parameter has an invalid value.
+    #           value: {"message":"Validation error","error_code":"INVALID","param":"card.expiry_year"}
+    # FIXME - See if this one works
     ErrorBadRequest:
       description: Bad Request
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/ErrorExtended"
+            oneOf:
+              - $ref: "#/components/schemas/ErrorExtended"
+              - type: array
+                description: List of error messages.
+                items:
+                  $ref: "#/components/schemas/ErrorExtended"
           examples:
             Invalid_Parameter:
               description: A required parameter has an invalid value.
               value: {"message":"Validation error","error_code":"INVALID","param":"card.expiry_year"}
-    # FIXME - See if this one works
-      # ErrorBadRequest:
-      #   description: Bad Request
-      #   content:
-      #     application/json:
-      #       schema:
-      #         oneOf:
-      #           - $ref: "#/components/schemas/ErrorExtended"
-      #           - type: array
-      #             description: List of error messages.
-      #             items:
-      #               $ref: "#/components/schemas/ErrorExtended"
-      #       examples:
-      #         Invalid_Parameter:
-      #           description: A required parameter has an invalid value.
-      #           value: {"message":"Validation error","error_code":"INVALID","param":"card.expiry_year"}
-      #         Multiple_Invalid_Parameters:
-      #           description: Multiple required parameters have invalid values.
-      #           value: [{"error_code":"INVALID","message":"Validation error","param":"card.name"},{"error_code":"INVALID","message":"Validation error","param":"card.number"},{"error_code":"INVALID","message":"Validation error","param":"card.expiry_year"}]
+            Multiple_Invalid_Parameters:
+              description: Multiple required parameters have invalid values.
+              value: [{"error_code":"INVALID","message":"Validation error","param":"card.name"},{"error_code":"INVALID","message":"Validation error","param":"card.number"},{"error_code":"INVALID","message":"Validation error","param":"card.expiry_year"}]
     ErrorNotAuthorized:
       description: Unauthorized
       content:
