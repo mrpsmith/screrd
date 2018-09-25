@@ -1272,7 +1272,7 @@ components:
         application/json:
           examples:
             NoBody:
-              value: {}
+              value:
     # Error responses
     ErrorBadRequest:
       description: Bad Request
