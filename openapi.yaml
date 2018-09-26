@@ -450,11 +450,11 @@ components:
             # - boleto
             # - direct_debit
             # - moto
-          installments:
-            type: integer
-            description: Number of installments for deferred payments. Available only for merchant users in Brazil.
-            minimum: 1
-            maximum: 12
+        installments:
+          type: integer
+          description: Number of installments for deferred payments. Available only for merchant users in Brazil.
+          minimum: 1
+          maximum: 12
       required:
         - payment_type
     CheckoutProcessCard:
