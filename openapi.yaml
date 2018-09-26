@@ -109,7 +109,7 @@ paths:
       requestBody:
         $ref: "#/components/requestBodies/CheckoutProcess"
       responses:
-        "200":
+        "200":  # DEBUG - Fix the value of the `Content-Type` header! Currently, it returns `application/octet-string` but should be `application/json`. Also, add a `Status` header to the response.
           $ref: "#/components/responses/CheckoutProcess"
         "400":
           $ref: "#/components/responses/ErrorBadRequest"
@@ -234,7 +234,7 @@ paths:
       requestBody:
         $ref: "#/components/requestBodies/PaymentInstrument"
       responses:
-        "200":
+        "200":  # DEBUG - Fix the value of the `Content-Type` header! Currently, it returns `application/octet-string` but should be `application/json`. Also, add a `Status` header to the response.
           $ref: "#/components/responses/PaymentInstrument"
         "400":
           $ref: "#/components/responses/ErrorBadRequest"
@@ -445,16 +445,16 @@ components:
           description: Type of payment instrument used for processing the checkout.
           enum:
             - card
-            # The following options should be valid but are not used for ecomm and are commented out to avoid confusion.
+            # DEBUG - The following options should be valid but are not used for ecomm and are commented out to avoid confusion.
             # - balance
             # - boleto
             # - direct_debit
             # - moto
-        # DEBUG - The `installments`parameter should be used only in Brazil and is commented out to avoid confusion.
-          # installments:
-          #   type: integer
-          #   description: Number of installments for deferred payments.
-          #   minimum: 1
+          installments:
+            type: integer
+            description: Number of installments for deferred payments. Available only for merchant users in Brazil.
+            minimum: 1
+            maximum: 12
       required:
         - payment_type
     CheckoutProcessCard:
@@ -885,13 +885,13 @@ components:
       type: string
       description: Three-letter [ISO4217](https://en.wikipedia.org/wiki/ISO_4217) code of the currency for the amount. Possible values are only ones from the list of curently supported currencies.
       enum:
+        - EUR
         - BGN
         - BRL
         - CHF
         - CLP
         - CZK
         - DKK
-        - EUR
         - GBP
         - HRK
         - HUF
@@ -1272,7 +1272,7 @@ components:
         application/json:
           examples:
             NoBody:
-              value:
+              value: {}
     # Error responses
     ErrorBadRequest:
       description: Bad Request
@@ -1619,7 +1619,7 @@ components:
           tokenUrl: https://api.sumup.com/token
           scopes:
             payments: Make payments by creating and processing checkouts.
-            user.app-settings: View and manage the settings of your client application.
+            # user.app-settings: View and manage the settings of your client application.
           # # transactions.history: View your transactions and transaction history.
             # user.profile_readonly: View your user profile details.
             # payments_instruments: Manage customers and their payment instruments.
